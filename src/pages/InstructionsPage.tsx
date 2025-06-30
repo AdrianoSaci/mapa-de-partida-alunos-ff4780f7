@@ -1,0 +1,96 @@
+
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CheckCircle } from 'lucide-react';
+
+interface InstructionsPageProps {
+  onContinue: () => void;
+}
+
+export const InstructionsPage: React.FC<InstructionsPageProps> = ({ onContinue }) => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-blue-600 mb-2">Idade de Fala</h1>
+          <p className="text-lg text-gray-600">Avaliação da Idade de Comunicação</p>
+        </div>
+
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-xl text-center text-green-600">
+              Como Preencher a Avaliação
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-800">Observe com atenção</h3>
+                  <p className="text-gray-600">
+                    Marque apenas as habilidades que a criança consegue fazer de forma consistente, 
+                    ou seja, na maioria das vezes quando estimulada.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-800">Seja realista</h3>
+                  <p className="text-gray-600">
+                    Não marque habilidades que a criança fez apenas uma ou duas vezes. 
+                    A avaliação deve refletir o comportamento habitual da criança.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-800">Considere o contexto</h3>
+                  <p className="text-gray-600">
+                    Pense em situações do dia a dia, brincadeiras e interações familiares 
+                    para avaliar se a criança demonstra cada habilidade.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-800">Tempo necessário</h3>
+                  <p className="text-gray-600">
+                    A avaliação leva aproximadamente 10-15 minutos. 
+                    Reserve um tempo tranquilo para preenchê-la com cuidado.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+              <h4 className="font-semibold text-orange-800 mb-2">⚠️ Importante</h4>
+              <p className="text-orange-700 text-sm">
+                Esta avaliação é uma ferramenta de triagem e não substitui uma avaliação 
+                profissional completa. Em caso de dúvidas sobre o desenvolvimento da criança, 
+                consulte um fonoaudiólogo ou pediatra.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="text-center">
+          <Button 
+            onClick={onContinue}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
+            size="lg"
+          >
+            Começar Avaliação
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
