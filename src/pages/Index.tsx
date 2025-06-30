@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { AuthPage } from '@/pages/AuthPage';
 import { InstructionsPage } from '@/pages/InstructionsPage';
 import { EvaluationFlow } from '@/components/evaluation/EvaluationFlow';
+import { Header } from '@/components/Header';
 
 type AppFlow = 'instructions' | 'evaluation';
 
@@ -26,11 +27,16 @@ const Index = () => {
     return <AuthPage />;
   }
 
-  if (currentFlow === 'instructions') {
-    return <InstructionsPage onContinue={() => setCurrentFlow('evaluation')} />;
-  }
-
-  return <EvaluationFlow onBackToInstructions={() => setCurrentFlow('instructions')} />;
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+      <Header />
+      {currentFlow === 'instructions' ? (
+        <InstructionsPage onContinue={() => setCurrentFlow('evaluation')} />
+      ) : (
+        <EvaluationFlow onBackToInstructions={() => setCurrentFlow('instructions')} />
+      )}
+    </div>
+  );
 };
 
 export default Index;

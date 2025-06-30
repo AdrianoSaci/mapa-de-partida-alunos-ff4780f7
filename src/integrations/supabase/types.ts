@@ -9,7 +9,78 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      evaluations: {
+        Row: {
+          caregiver_email: string
+          caregiver_name: string
+          caregiver_whatsapp: string
+          child_date_of_birth: string
+          child_name: string
+          communication_age: string
+          created_at: string | null
+          data_hora_preenchimento: string
+          id: string
+          scores: Json
+          selected_skills: Json
+          user_id: string | null
+        }
+        Insert: {
+          caregiver_email: string
+          caregiver_name: string
+          caregiver_whatsapp: string
+          child_date_of_birth: string
+          child_name: string
+          communication_age: string
+          created_at?: string | null
+          data_hora_preenchimento: string
+          id?: string
+          scores: Json
+          selected_skills: Json
+          user_id?: string | null
+        }
+        Update: {
+          caregiver_email?: string
+          caregiver_name?: string
+          caregiver_whatsapp?: string
+          child_date_of_birth?: string
+          child_name?: string
+          communication_age?: string
+          created_at?: string | null
+          data_hora_preenchimento?: string
+          id?: string
+          scores?: Json
+          selected_skills?: Json
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          created_at: string | null
+          enable_reminders: boolean | null
+          id: string
+          last_evaluation: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          enable_reminders?: boolean | null
+          id?: string
+          last_evaluation?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          enable_reminders?: boolean | null
+          id?: string
+          last_evaluation?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

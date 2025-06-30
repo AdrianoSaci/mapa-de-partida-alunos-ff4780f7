@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EvaluationData } from '@/types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
 
 interface ResultsPageProps {
   evaluationData: EvaluationData;
@@ -25,6 +27,42 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
     { name: '4a', desired: 11, minimum: 7, achieved: evaluationData.scores['4 anos'] || 0 },
     { name: '5a', desired: 11, minimum: 7, achieved: evaluationData.scores['5 anos'] || 0 }
   ];
+
+  const handleSendEmail = async () => {
+    try {
+      const { error } = await supabase.functions.invoke('send-evaluation-email', {
+        body: {
+          caregiverEmail: evaluationData.caregiver.email,
+          caregiverName: evaluationData.caregiver.name,
+          childName: evaluationData.child.name,
+          communicationAge: evaluationData.communicationAge,
+          evaluationDate: evaluationData.dataHoraPreenchimento
+        }
+      });
+
+      if (error) {
+        console.error('Error sending email:', error);
+        toast({
+          title: "Erro",
+          description: "Não foi possível enviar o email. Tente novamente.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      toast({
+        title: "Email Enviado",
+        description: "O resultado foi enviado para o email do responsável.",
+      });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível enviar o email. Tente novamente.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const handleShare = (platform: string) => {
     const message = `Resultado da avaliação de comunicação para ${evaluationData.child.name}: ${evaluationData.communicationAge}`;
@@ -91,12 +129,19 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <Button 
               onClick={onRestart}
               className="bg-blue-600 hover:bg-blue-700"
             >
               Refazer Avaliação
+            </Button>
+            
+            <Button 
+              onClick={handleSendEmail}
+              className="bg-purple-600 hover:bg-purple-700"
+            >
+              Enviar por Email
             </Button>
             
             <Button 
