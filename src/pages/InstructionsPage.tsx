@@ -1,27 +1,23 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle } from 'lucide-react';
-
 interface InstructionsPageProps {
   onContinue: () => void;
 }
-
-export const InstructionsPage: React.FC<InstructionsPageProps> = ({ onContinue }) => {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-4">
+export const InstructionsPage: React.FC<InstructionsPageProps> = ({
+  onContinue
+}) => {
+  return <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-blue-600 mb-2">Idade de Fala</h1>
-          <p className="text-lg text-gray-600">Avaliação da Idade de Comunicação</p>
+          <p className="text-lg text-gray-600">Descubra a Real Idade de Comunicação do seu filho</p>
         </div>
 
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="text-xl text-center text-green-600">
-              Como Preencher a Avaliação
-            </CardTitle>
+            <CardTitle className="text-xl text-center text-green-600">Instruções de preenchimento</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-4">
@@ -29,10 +25,7 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({ onContinue }
                 <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold text-gray-800">Observe com atenção</h3>
-                  <p className="text-gray-600">
-                    Marque apenas as habilidades que a criança consegue fazer de forma consistente, 
-                    ou seja, na maioria das vezes quando estimulada.
-                  </p>
+                  <p className="text-gray-600">Marque APENAS as habilidades que a criança consegue fazer de forma consistente. Ou seja, se ela SEMPRE FAZ, MARQUE, se ela SÓ FAZ DE VEZ EM QUANDO, NÃO MARQUE.</p>
                 </div>
               </div>
 
@@ -62,10 +55,7 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({ onContinue }
                 <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold text-gray-800">Tempo necessário</h3>
-                  <p className="text-gray-600">
-                    A avaliação leva aproximadamente 10-15 minutos. 
-                    Reserve um tempo tranquilo para preenchê-la com cuidado.
-                  </p>
+                  <p className="text-gray-600">A avaliação leva aproximadamente 10-15 minutos. Reserve um tempo tranquilo para preenchê-la com cuidado, pois é muito importante que as informações reflitam a realidade da sua criança. O resultado do teste está diretamente relacionado à veracidade das informações.</p>
                 </div>
               </div>
             </div>
@@ -82,15 +72,10 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({ onContinue }
         </Card>
 
         <div className="text-center">
-          <Button 
-            onClick={onContinue}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
-            size="lg"
-          >
+          <Button onClick={onContinue} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg" size="lg">
             Começar Avaliação
           </Button>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
