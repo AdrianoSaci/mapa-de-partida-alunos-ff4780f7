@@ -11,8 +11,8 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
   return <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-blue-600 mb-2">Idade de Fala</h1>
-          <p className="text-lg text-gray-600">Descubra a Real Idade de Comunicação do seu filho</p>
+          <h1 className="text-3xl font-bold text-blue-600 mb-2">IDADE DE FALA</h1>
+          <p className="text-lg text-gray-600 font-medium">Descubra a Real Idade de Comunicação do seu filho</p>
         </div>
 
         <Card className="mb-6">
