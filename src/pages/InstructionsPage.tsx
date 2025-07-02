@@ -62,11 +62,7 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
 
             <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
               <h4 className="font-semibold text-orange-800 mb-2">⚠️ Importante</h4>
-              <p className="text-orange-700 text-sm">Esta avaliação é uma ferramenta de triagem e não substitui uma avaliação completa por um profissional fonoaudiólogo. Em caso de dúvidas sobre o desenvolvimento da criança, consulte nossa Equipe de Suporte: (42)999004159/(42)999189030.
-Esta ferramenta é parte integrante do Programa Filho Que Fala, elaborado pela Dra. Camila Koszka, fonoaudióloga especializada, com mais de 18 anos de experiência, onde as mamães aprendem a destravar a fala dos seus filhos dentro de 30 dias!
-Todas as informações constantes neste teste seguem a Lei 12.965 de 2014 - Marco Civil da Internet e Lei 13.709 de 2018 - Lei Geral de Proteção de Dados (LGPD).
-
-            </p>
+              <p className="text-orange-700 text-sm font-normal">Esta avaliação é uma ferramenta de triagem e não substitui uma avaliação completa por um profissional fonoaudiólogo. Em caso de dúvidas sobre o desenvolvimento da criança, consulte nossa Equipe de Suporte: (42)999004159/(42)999189030. Esta ferramenta é parte integrante do PROGRAMA FILHO QUE FALA, elaborado pela Dra. Camila Koszka, fonoaudióloga especializada, com mais de 18 anos de experiência, onde as MAMÃES APRENDEM A DESTRAVAR A FALA DOS SEUS FILHOS EM APENAS 30 DIAS! Todas as informações constantes neste teste seguem a Lei 12.965 de 2014 - Marco Civil da Internet e Lei 13.709 de 2018 - Lei Geral de Proteção de Dados (LGPD).</p>
             </div>
           </CardContent>
         </Card>
