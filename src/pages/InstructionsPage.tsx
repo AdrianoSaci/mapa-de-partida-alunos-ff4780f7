@@ -25,7 +25,7 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
                 <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold text-gray-800">Observe com atenção</h3>
-                  <p className="text-gray-600">Marque APENAS as habilidades que a criança consegue fazer de forma consistente. Ou seja, se ela SEMPRE FAZ, MARQUE, se ela SÓ FAZ DE VEZ EM QUANDO, NÃO MARQUE.</p>
+                  <p className="text-gray-600">Marque APENAS as habilidades que a criança consegue fazer de forma consistente. Ou seja, se ela SEMPRE FAZ, MARQUE, se ela SÓ FAZ DE VEZ EM QUANDO, NÃO MARQUE. Independente da idade do seu filho(a) você deve analisar TODAS as habilidades (de zero até 5 anos).</p>
                 </div>
               </div>
 
