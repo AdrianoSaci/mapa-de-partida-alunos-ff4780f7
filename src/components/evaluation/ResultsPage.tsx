@@ -103,7 +103,7 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
   return <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-4">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-blue-600 mb-2">RESULTADO DA AVALIÇÃO</h1>
+          <h1 className="text-3xl font-bold text-blue-600 mb-2">RESULTADO DA AVALIAÇÃO</h1>
           <p className="text-lg text-gray-600">Idade de comunicação calculada</p>
         </div>
 
