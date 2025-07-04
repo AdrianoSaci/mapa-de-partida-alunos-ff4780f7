@@ -2,8 +2,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -16,6 +14,7 @@ interface EvaluationEmailRequest {
   childName: string;
   communicationAge: string;
   evaluationDate: string;
+  chronologicalAge?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -25,13 +24,40 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    console.log("Starting email sending process...");
+    
+    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    if (!resendApiKey) {
+      console.error("RESEND_API_KEY is not configured");
+      return new Response(
+        JSON.stringify({ error: "Email service not configured" }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    console.log("RESEND_API_KEY found, initializing Resend...");
+    const resend = new Resend(resendApiKey);
+
     const { 
       caregiverEmail, 
       caregiverName, 
       childName, 
       communicationAge, 
-      evaluationDate 
+      evaluationDate,
+      chronologicalAge 
     }: EvaluationEmailRequest = await req.json();
+
+    console.log("Email data received:", {
+      caregiverEmail,
+      caregiverName,
+      childName,
+      communicationAge,
+      evaluationDate,
+      chronologicalAge
+    });
 
     const emailResponse = await resend.emails.send({
       from: "Idade de Fala <onboarding@resend.dev>",
@@ -44,7 +70,8 @@ const handler = async (req: Request): Promise<Response> => {
           <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h2 style="color: #16a34a; margin-top: 0;">Informações da Avaliação</h2>
             <p><strong>Responsável:</strong> ${caregiverName}</p>
-            <p><strong>Criança:</strong> ${childName}</p>
+            <p><strong>Nome da criança:</strong> ${childName}</p>
+            ${chronologicalAge ? `<p><strong>Idade cronológica da criança:</strong> ${chronologicalAge}</p>` : ''}
             <p><strong>Data da Avaliação:</strong> ${evaluationDate}</p>
           </div>
           
@@ -73,9 +100,9 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Evaluation email sent successfully:", emailResponse);
+    console.log("Email sent successfully:", emailResponse);
 
-    return new Response(JSON.stringify(emailResponse), {
+    return new Response(JSON.stringify({ success: true, data: emailResponse }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -85,7 +112,11 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error in send-evaluation-email function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: error.toString(),
+        stack: error.stack 
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
