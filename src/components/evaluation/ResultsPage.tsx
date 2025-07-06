@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EvaluationData } from '@/types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { calculateAge } from '@/utils/ageCalculator';
 import jsPDF from 'jspdf';
@@ -68,43 +67,6 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
   }];
 
   const chronologicalAge = calculateAge(evaluationData.child.dateOfBirth);
-
-  const handleSendEmail = async () => {
-    try {
-      const { error } = await supabase.functions.invoke('send-evaluation-email', {
-        body: {
-          caregiverEmail: evaluationData.caregiver.email,
-          caregiverName: evaluationData.caregiver.name,
-          childName: evaluationData.child.name,
-          communicationAge: evaluationData.communicationAge,
-          evaluationDate: evaluationData.dataHoraPreenchimento,
-          chronologicalAge: chronologicalAge
-        }
-      });
-
-      if (error) {
-        console.error('Error sending email:', error);
-        toast({
-          title: "Erro",
-          description: "Não foi possível enviar o email. Verifique se o serviço de email está configurado.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      toast({
-        title: "Email Enviado",
-        description: "O resultado foi enviado para o email do responsável."
-      });
-    } catch (error) {
-      console.error('Error sending email:', error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível enviar o email. Tente novamente.",
-        variant: "destructive"
-      });
-    }
-  };
 
   const handleDownloadPDF = async () => {
     try {
@@ -220,13 +182,9 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
           <Button onClick={onRestart} className="bg-blue-600 hover:bg-blue-700">
             Refazer Avaliação
-          </Button>
-          
-          <Button onClick={handleSendEmail} className="bg-purple-600 hover:bg-purple-700">
-            Enviar por Email
           </Button>
           
           <Dialog>
@@ -250,8 +208,39 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
               </DialogFooter>
             </DialogContent>
           </Dialog>
+        </div>
 
-          <Button variant="outline" onClick={onBackToInstructions}>
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle className="text-xl text-blue-600">Como interpretar o resultado no gráfico</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-4 h-4 bg-green-500 rounded"></div>
+                <p><strong>Barras Verdes (Desejado):</strong> Representa o número ideal de habilidades que a criança deveria ter desenvolvido para cada faixa etária. É a meta de desenvolvimento esperada.</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-4 h-4 bg-red-500 rounded"></div>
+                <p><strong>Barras Vermelhas (Mínimo):</strong> Representa o número mínimo de habilidades necessárias para um desenvolvimento adequado. Valores abaixo deste indicam necessidade de atenção especial.</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-4 h-4 bg-orange-500 rounded"></div>
+                <p><strong>Barras Laranjas (Alcançado):</strong> Representa quantas habilidades a criança já desenvolveu em cada faixa etária, baseado na avaliação realizada.</p>
+              </div>
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <strong>Dica de interpretação:</strong> Compare as barras laranjas (alcançado) com as verdes (desejado) e vermelhas (mínimo). 
+                  Se a barra laranja estiver próxima ou acima da verde, o desenvolvimento está adequado. 
+                  Se estiver abaixo da vermelha, pode indicar necessidade de estimulação adicional naquela área.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex justify-center mt-8">
+          <Button variant="outline" onClick={onBackToInstructions} className="w-full md:w-auto">
             Voltar ao Início
           </Button>
         </div>
