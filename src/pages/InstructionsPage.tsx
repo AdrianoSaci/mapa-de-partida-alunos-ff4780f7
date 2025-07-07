@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -65,7 +64,7 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
               <h4 className="font-semibold text-orange-800 mb-2">⚠️ Importante</h4>
               <div className="text-orange-700 text-sm font-normal space-y-2">
                 <p>Esta avaliação é uma ferramenta de triagem e não substitui uma avaliação completa por um profissional fonoaudiólogo.</p>
-                <p>Em caso de dúvidas sobre o desenvolvimento da criança, consulte nossa Equipe de Suporte: (42)999004159/(42)999189030.</p>
+                <p>Em caso de dúvidas sobre o preenchimento, consulte nossa Equipe de Suporte: (42)999004159/(42)999189030.</p>
                 <p>Esta ferramenta é parte integrante do PROGRAMA FILHO QUE FALA, elaborado pela Dra. Camila Koszka, fonoaudióloga especializada, com mais de 18 anos de experiência, onde as MAMÃES APRENDEM A DESTRAVAR A FALA DOS SEUS FILHOS EM APENAS 30 DIAS!</p>
                 <p>Todas as informações constantes neste teste seguem a Lei 12.965 de 2014 - Marco Civil da Internet e Lei 13.709 de 2018 - Lei Geral de Proteção de Dados (LGPD).</p>
               </div>
