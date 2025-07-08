@@ -70,13 +70,15 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
 
   const handleDownloadPDF = async () => {
     try {
-      const element = document.getElementById('results-content');
+      const element = document.getElementById('pdf-content');
       if (!element) return;
 
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        width: element.scrollWidth,
+        height: element.scrollHeight
       });
 
       const imgData = canvas.toDataURL('image/png');
@@ -118,68 +120,99 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-4">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-blue-600 mb-2">RESULTADO DA AVALIAÇÃO</h1>
-          <p className="text-lg text-gray-600">Idade de comunicação calculada</p>
-        </div>
+        <div id="pdf-content" className="bg-white p-8 rounded-lg">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-blue-600 mb-2">RESULTADO DA AVALIAÇÃO</h1>
+            <p className="text-lg text-gray-600">Idade de comunicação calculada</p>
+          </div>
 
-        <div id="results-content" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl text-green-600">Informações da Avaliação</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-3">
-                <p className="text-lg">
-                  <strong>Nome da criança:</strong> {evaluationData.child.name}
-                </p>
-                <p className="text-lg">
-                  <strong>Idade cronológica da criança:</strong> {chronologicalAge}
-                </p>
-                <div className="bg-green-100 p-4 rounded-lg">
-                  <p className="text-xl font-bold text-green-600">
-                    <strong>Idade de comunicação:</strong> {evaluationData.communicationAge}
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl text-green-600">Informações da Avaliação</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-3">
+                  <p className="text-lg">
+                    <strong>Nome da criança:</strong> {evaluationData.child.name}
+                  </p>
+                  <p className="text-lg">
+                    <strong>Idade cronológica da criança:</strong> {chronologicalAge}
+                  </p>
+                  <div className="bg-green-100 p-4 rounded-lg">
+                    <p className="text-xl font-bold text-green-600">
+                      <strong>Idade de comunicação:</strong> {evaluationData.communicationAge}
+                    </p>
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    <strong>Avaliação realizada em:</strong> {evaluationData.dataHoraPreenchimento}
                   </p>
                 </div>
-                <p className="text-sm text-gray-500">
-                  <strong>Avaliação realizada em:</strong> {evaluationData.dataHoraPreenchimento}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl text-green-600">Gráfico de Desempenho</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-96">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} margin={{
-                    top: 30,
-                    right: 30,
-                    left: 20,
-                    bottom: 5
-                  }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="desired" fill="#10b981" name="Desejado">
-                      <LabelList dataKey="desired" position="top" />
-                    </Bar>
-                    <Bar dataKey="minimum" fill="#ef4444" name="Mínimo">
-                      <LabelList dataKey="minimum" position="top" />
-                    </Bar>
-                    <Bar dataKey="achieved" fill="#fb923c" name="Alcançado">
-                      <LabelList dataKey="achieved" position="top" />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl text-green-600">Gráfico de Desempenho</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-96">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={chartData} margin={{
+                      top: 30,
+                      right: 30,
+                      left: 20,
+                      bottom: 5
+                    }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="desired" fill="#10b981" name="Desejado">
+                        <LabelList dataKey="desired" position="top" />
+                      </Bar>
+                      <Bar dataKey="minimum" fill="#ef4444" name="Mínimo">
+                        <LabelList dataKey="minimum" position="top" />
+                      </Bar>
+                      <Bar dataKey="achieved" fill="#fb923c" name="Alcançado">
+                        <LabelList dataKey="achieved" position="top" />
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl text-blue-600">Como interpretar o resultado no gráfico</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 bg-green-500 rounded"></div>
+                    <p><strong>Barras Verdes (Desejado):</strong> Representa o número ideal de habilidades que a criança deveria ter desenvolvido para cada faixa etária. É a meta de desenvolvimento esperada.</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 bg-red-500 rounded"></div>
+                    <p><strong>Barras Vermelhas (Mínimo):</strong> Representa o número mínimo de habilidades necessárias para um desenvolvimento adequado. Valores abaixo deste indicam necessidade de atenção especial.</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 bg-orange-500 rounded"></div>
+                    <p><strong>Barras Laranjas (Alcançado):</strong> Representa quantas habilidades a criança já desenvolveu em cada faixa etária, baseado na avaliação realizada.</p>
+                  </div>
+                  <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-800">
+                      <strong>Dica de interpretação:</strong> Compare as barras laranjas (alcançado) com as verdes (desejado) e vermelhas (mínimo). 
+                      Se a barra laranja estiver próxima ou acima da verde, o desenvolvimento está adequado. 
+                      Se estiver abaixo da vermelha, pode indicar necessidade de estimulação adicional naquela área.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
@@ -209,35 +242,6 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
             </DialogContent>
           </Dialog>
         </div>
-
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle className="text-xl text-blue-600">Como interpretar o resultado no gráfico</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-4 h-4 bg-green-500 rounded"></div>
-                <p><strong>Barras Verdes (Desejado):</strong> Representa o número ideal de habilidades que a criança deveria ter desenvolvido para cada faixa etária. É a meta de desenvolvimento esperada.</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-4 h-4 bg-red-500 rounded"></div>
-                <p><strong>Barras Vermelhas (Mínimo):</strong> Representa o número mínimo de habilidades necessárias para um desenvolvimento adequado. Valores abaixo deste indicam necessidade de atenção especial.</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-4 h-4 bg-orange-500 rounded"></div>
-                <p><strong>Barras Laranjas (Alcançado):</strong> Representa quantas habilidades a criança já desenvolveu em cada faixa etária, baseado na avaliação realizada.</p>
-              </div>
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  <strong>Dica de interpretação:</strong> Compare as barras laranjas (alcançado) com as verdes (desejado) e vermelhas (mínimo). 
-                  Se a barra laranja estiver próxima ou acima da verde, o desenvolvimento está adequado. 
-                  Se estiver abaixo da vermelha, pode indicar necessidade de estimulação adicional naquela área.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         <div className="flex justify-center mt-8">
           <Button variant="outline" onClick={onBackToInstructions} className="w-full md:w-auto">
