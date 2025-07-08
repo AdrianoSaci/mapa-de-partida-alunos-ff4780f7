@@ -24,8 +24,8 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
               <div className="flex items-start gap-3">
                 <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
                 <div>
-                  <h3 className="font-semibold text-gray-800">Observe com atenção</h3>
-                  <p className="text-gray-600">Marque APENAS as habilidades que a criança consegue fazer de forma consistente. Ou seja, se ela SEMPRE FAZ, MARQUE, se ela SÓ FAZ DE VEZ EM QUANDO, NÃO MARQUE. Independente da idade do seu filho(a) você deve analisar TODAS as habilidades (de zero até 5 anos).</p>
+                  <h3 className="font-semibold text-gray-800">Leia com atenção</h3>
+                  <p className="text-gray-600">A AVALIAÇÃO DA IDADE DE FALA é uma ferramenta que se baseia nas habilidades que uma criança deve apresentar em cada faixa etária, seguindo os marcos do desenvolvimento propost</p>
                 </div>
               </div>
 
@@ -33,21 +33,15 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
                 <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold text-gray-800">Seja realista</h3>
-                  <p className="text-gray-600">
-                    Não marque habilidades que a criança fez apenas uma ou duas vezes. 
-                    A avaliação deve refletir o comportamento habitual da criança.
-                  </p>
+                  <p className="text-gray-600">Não marque habilidades que a criança fez apenas uma ou duas vezes. A avaliação deve refletir o comportamento habitual da criança. Marque APENAS as habilidades que a criança consegue fazer de forma consistente. Ou seja, se ela SEMPRE FAZ, MARQUE, se ela SÓ FAZ DE VEZ EM QUANDO, NÃO MARQUE.</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
                 <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
                 <div>
-                  <h3 className="font-semibold text-gray-800">Considere o contexto</h3>
-                  <p className="text-gray-600">
-                    Pense em situações do dia a dia, brincadeiras e interações familiares 
-                    para avaliar se a criança demonstra cada habilidade.
-                  </p>
+                  <h3 className="font-semibold text-gray-800">O que preencher</h3>
+                  <p className="text-gray-600">Independente da idade do seu filho(a) você deve analisar TODAS as habilidades (de zero até 5 anos) e marcar aquelas habilidades que ele(a) já adquiriu e faz corriqueiramente.</p>
                 </div>
               </div>
 
