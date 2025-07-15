@@ -108,7 +108,7 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-blue-600 mb-2">Revisão das Respostas</h1>
-          <p className="text-lg text-gray-600">Confira as informações antes de finalizar!</p>
+          <p className="text-lg text-gray-600">Confira todas as informações antes de finalizar!</p>
         </div>
 
         <div className="space-y-6">
