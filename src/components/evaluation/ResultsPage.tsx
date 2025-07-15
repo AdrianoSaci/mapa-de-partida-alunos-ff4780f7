@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -209,6 +208,21 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                       Se estiver abaixo da vermelha, pode indicar necessidade de estimulação adicional naquela área.
                     </p>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-orange-200 bg-orange-50">
+              <CardHeader>
+                <CardTitle className="text-xl text-orange-600 flex items-center gap-2">
+                  ⚠️ ORIENTAÇÕES IMPORTANTES – Próximo passo
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="p-4 bg-orange-100 rounded-lg">
+                  <p className="text-orange-800 leading-relaxed">
+                    De posse do resultado da idade real de comunicação do seu filho, você deve procurar dentro do curso o Módulo <strong>"O QUE ENSINAR? (usar idade de comunicação do Mapa)"</strong> e colocar em prático todo o conteúdo disponível. Caso tenha alguma dúvida, fale com nossa Equipe de Suporte.
+                  </p>
                 </div>
               </CardContent>
             </Card>
