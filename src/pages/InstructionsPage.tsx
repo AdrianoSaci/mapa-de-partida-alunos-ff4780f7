@@ -11,7 +11,7 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
   return <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-blue-600 mb-2">IDADE DE FALA</h1>
+          <h1 className="text-3xl font-bold text-blue-600 mb-2">MAPA DE PARTIDA</h1>
           <p className="text-lg text-gray-600 font-medium">Descubra a Real Idade de Comunicação do seu filho</p>
         </div>
 
@@ -25,7 +25,7 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
                 <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold text-gray-800">Leia com atenção</h3>
-                  <p className="text-gray-600">A AVALIAÇÃO DA IDADE DE FALA é uma ferramenta que se baseia nas habilidades que uma criança deve apresentar em cada faixa etária, seguindo os marcos do desenvolvimento e da fala propostos por ampla literatura científica e na Caderneta da Criança, publicada pelo Ministério da Saúde (7ª Edição, de 2024). </p>
+                  <p className="text-gray-600">O MAPA DE PARTIDA é uma ferramenta que se baseia nas habilidades que uma criança deve apresentar em cada faixa etária, seguindo os marcos do desenvolvimento e da fala propostos por ampla literatura científica e na Caderneta da Criança, publicada pelo Ministério da Saúde (7ª Edição, de 2024). </p>
                 </div>
               </div>
 
