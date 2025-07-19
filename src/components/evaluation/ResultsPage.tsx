@@ -221,7 +221,7 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
               <CardContent>
                 <div className="p-4 bg-orange-100 rounded-lg">
                   <p className="text-orange-800 leading-relaxed">
-                    De posse do resultado da idade real de comunicação do seu filho, você deve procurar dentro do curso o Módulo <strong>"O QUE ENSINAR? (usar idade de comunicação do Mapa)"</strong> e colocar em prático todo o conteúdo disponível. Caso tenha alguma dúvida, fale com nossa Equipe de Suporte.
+                    De posse do resultado da idade real de comunicação do seu filho, você deve procurar dentro do curso o Módulo <strong>"O QUE ENSINAR? (usar idade de comunicação do Mapa)"</strong> e colocar em prática todo o conteúdo disponível. Caso tenha alguma dúvida, fale com nossa Equipe de Suporte.
                   </p>
                 </div>
               </CardContent>
