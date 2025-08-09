@@ -9,9 +9,10 @@ import { toast } from '@/hooks/use-toast';
 
 interface RegisterFormProps {
   onToggleMode: () => void;
+  onAwaitingConfirmation: (email: string) => void;
 }
 
-export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode }) => {
+export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode, onAwaitingConfirmation }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -52,16 +53,21 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode }) => {
     setIsLoading(true);
     try {
       await register(email, password, name);
-      toast({
-        title: "Sucesso",
-        description: "Conta criada com sucesso!"
-      });
-    } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Erro ao criar conta. Tente novamente.",
-        variant: "destructive"
-      });
+      // Registration successful - show confirmation waiting screen
+      onAwaitingConfirmation(email);
+    } catch (error: any) {
+      const errorMessage = error?.message || "Erro ao criar conta. Tente novamente.";
+      
+      // Check if this is an email confirmation error
+      if (errorMessage.includes('Verifique seu email')) {
+        onAwaitingConfirmation(email);
+      } else {
+        toast({
+          title: "Erro",
+          description: errorMessage,
+          variant: "destructive"
+        });
+      }
     } finally {
       setIsLoading(false);
     }

@@ -10,6 +10,7 @@ interface AuthContextType {
   logout: () => void;
   register: (email: string, password: string, name: string) => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
+  resendConfirmation: (email: string) => Promise<void>;
   loading: boolean;
 }
 
@@ -124,7 +125,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Check if email confirmation is required
       if (data.user && !data.session) {
         console.log('Email confirmation required. Please check your email to confirm your account.');
-        throw new Error('Cadastro realizado! Verifique seu email para confirmar a conta. Se não recebeu o email, verifique a pasta de spam ou desabilite a confirmação por email nas configurações do Supabase.');
+        // Don't throw error, just let the component handle the confirmation flow
+        return;
       } else if (data.session) {
         console.log('User logged in immediately - email confirmation disabled');
       }
@@ -145,6 +147,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
     
     if (error) throw error;
+  };
+
+  const resendConfirmation = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`
+        }
+      });
+
+      if (error) throw error;
+      
+    } catch (error) {
+      console.error('Resend confirmation error:', error);
+      throw error;
+    }
   };
 
   const logout = async () => {
@@ -174,6 +194,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       logout,
       register,
       forgotPassword,
+      resendConfirmation,
       loading
     }}>
       {children}
