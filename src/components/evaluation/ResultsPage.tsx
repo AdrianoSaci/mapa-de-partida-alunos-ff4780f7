@@ -99,21 +99,21 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
       const chartContainer = clonedContent.querySelector('.h-96');
       if (chartContainer) {
         chartContainer.innerHTML = `
-          <div style="width: 800px; height: 400px; margin: 0 auto;">
-            <svg width="800" height="400" viewBox="0 0 800 400" style="background: white;">
+          <div style="width: 1000px; height: 500px; margin: 0 auto;">
+            <svg width="1000" height="500" viewBox="0 0 1000 500" style="background: white;">
               <!-- Grid lines -->
               <defs>
-                <pattern id="grid" width="50" height="25" patternUnits="userSpaceOnUse">
-                  <path d="M 50 0 L 0 0 0 25" fill="none" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3,3"/>
+                <pattern id="grid" width="60" height="30" patternUnits="userSpaceOnUse">
+                  <path d="M 60 0 L 0 0 0 30" fill="none" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3,3"/>
                 </pattern>
               </defs>
               <rect width="100%" height="100%" fill="url(#grid)" />
               
               <!-- Chart bars and labels -->
               ${chartData.map((item, index) => {
-                const x = 100 + index * 100;
+                const x = 150 + index * 130;
                 const maxValue = Math.max(item.desired, item.minimum, item.achieved);
-                const scale = 250 / Math.max(...chartData.map(d => Math.max(d.desired, d.minimum, d.achieved)));
+                const scale = 350 / Math.max(...chartData.map(d => Math.max(d.desired, d.minimum, d.achieved)));
                 
                 const desiredHeight = item.desired * scale;
                 const minimumHeight = item.minimum * scale;
@@ -121,36 +121,36 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                 
                 return `
                   <!-- Desired bar -->
-                  <rect x="${x - 30}" y="${350 - desiredHeight}" width="20" height="${desiredHeight}" fill="#10b981"/>
-                  <text x="${x - 20}" y="${350 - desiredHeight - 5}" text-anchor="middle" font-size="12" fill="#333">${item.desired}</text>
+                  <rect x="${x - 35}" y="${430 - desiredHeight}" width="25" height="${desiredHeight}" fill="#10b981"/>
+                  <text x="${x - 22}" y="${430 - desiredHeight - 5}" text-anchor="middle" font-size="12" fill="#333">${item.desired}</text>
                   
                   <!-- Minimum bar -->
-                  <rect x="${x - 5}" y="${350 - minimumHeight}" width="20" height="${minimumHeight}" fill="#ef4444"/>
-                  <text x="${x + 5}" y="${350 - minimumHeight - 5}" text-anchor="middle" font-size="12" fill="#333">${item.minimum}</text>
+                  <rect x="${x - 5}" y="${430 - minimumHeight}" width="25" height="${minimumHeight}" fill="#ef4444"/>
+                  <text x="${x + 7}" y="${430 - minimumHeight - 5}" text-anchor="middle" font-size="12" fill="#333">${item.minimum}</text>
                   
                   <!-- Achieved bar -->
-                  <rect x="${x + 20}" y="${350 - achievedHeight}" width="20" height="${achievedHeight}" fill="#fb923c"/>
-                  <text x="${x + 30}" y="${350 - achievedHeight - 5}" text-anchor="middle" font-size="12" fill="#333">${item.achieved}</text>
+                  <rect x="${x + 25}" y="${430 - achievedHeight}" width="25" height="${achievedHeight}" fill="#fb923c"/>
+                  <text x="${x + 37}" y="${430 - achievedHeight - 5}" text-anchor="middle" font-size="12" fill="#333">${item.achieved}</text>
                   
                   <!-- X axis label -->
-                  <text x="${x}" y="380" text-anchor="middle" font-size="14" fill="#333">${item.name}</text>
+                  <text x="${x}" y="460" text-anchor="middle" font-size="14" fill="#333">${item.name}</text>
                 `;
               }).join('')}
               
               <!-- Legend -->
-              <rect x="550" y="50" width="15" height="15" fill="#10b981"/>
-              <text x="575" y="62" font-size="12" fill="#333">Desejado</text>
+              <rect x="700" y="60" width="18" height="18" fill="#10b981"/>
+              <text x="725" y="74" font-size="14" fill="#333">Desejado</text>
               
-              <rect x="550" y="75" width="15" height="15" fill="#ef4444"/>
-              <text x="575" y="87" font-size="12" fill="#333">Mínimo</text>
+              <rect x="700" y="90" width="18" height="18" fill="#ef4444"/>
+              <text x="725" y="104" font-size="14" fill="#333">Mínimo</text>
               
-              <rect x="550" y="100" width="15" height="15" fill="#fb923c"/>
-              <text x="575" y="112" font-size="12" fill="#333">Alcançado</text>
+              <rect x="700" y="120" width="18" height="18" fill="#fb923c"/>
+              <text x="725" y="134" font-size="14" fill="#333">Alcançado</text>
               
               <!-- Y axis -->
-              <line x1="80" y1="50" x2="80" y2="350" stroke="#333" stroke-width="1"/>
+              <line x1="100" y1="60" x2="100" y2="430" stroke="#333" stroke-width="1"/>
               <!-- X axis -->
-              <line x1="80" y1="350" x2="750" y2="350" stroke="#333" stroke-width="1"/>
+              <line x1="100" y1="430" x2="900" y2="430" stroke="#333" stroke-width="1"/>
             </svg>
           </div>
         `;
