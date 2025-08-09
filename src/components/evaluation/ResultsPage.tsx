@@ -5,6 +5,7 @@ import { EvaluationData } from '@/types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts';
 import { toast } from '@/hooks/use-toast';
 import { calculateAge } from '@/utils/ageCalculator';
+import { useIsMobile } from '@/hooks/use-mobile';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import {
@@ -31,6 +32,7 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
   onFinish
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const isMobile = useIsMobile();
   const chartData = [{
     name: '0-11m',
     desired: 13,
@@ -96,7 +98,7 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
       clonedContent.style.padding = '0';
       
       // Substituir ResponsiveContainer por gráfico com dimensões fixas para PDF
-      const chartContainer = clonedContent.querySelector('.h-96');
+      const chartContainer = clonedContent.querySelector('.chart-container');
       if (chartContainer) {
         chartContainer.innerHTML = `
           <div style="width: 1000px; height: 550px; margin: 0 auto;">
@@ -274,9 +276,14 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                 <CardTitle className="text-xl text-green-600">Gráfico de Desempenho</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-[550px]">
+                <div className={`chart-container ${isMobile ? 'h-[400px]' : 'h-[550px]'}`}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData} margin={{
+                    <BarChart data={chartData} margin={isMobile ? {
+                      top: 20,
+                      right: 10,
+                      left: 30,
+                      bottom: 80
+                    } : {
                       top: 30,
                       right: 30,
                       left: 40,
@@ -285,22 +292,22 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis 
                         dataKey="name" 
-                        tick={{ fontSize: 12 }}
+                        tick={{ fontSize: isMobile ? 10 : 12 }}
                         axisLine={true}
                       />
                       <YAxis 
-                        tick={{ fontSize: 12 }}
+                        tick={{ fontSize: isMobile ? 10 : 12 }}
                         axisLine={true}
                       />
                       <Tooltip />
                       <Legend 
                         verticalAlign="bottom" 
-                        height={50}
+                        height={isMobile ? 40 : 50}
                         align="center"
                         iconType="rect"
                         wrapperStyle={{
                           paddingTop: "10px",
-                          fontSize: "14px"
+                          fontSize: isMobile ? "12px" : "14px"
                         }}
                       />
                       <Bar dataKey="desired" fill="#10b981" name="Desejado">
