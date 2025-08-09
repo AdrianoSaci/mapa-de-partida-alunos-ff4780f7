@@ -291,9 +291,9 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={chartData} margin={{
                           top: 30,
-                          right: 0,
+                          right: 80,
                           left: 0,
-                          bottom: 110
+                          bottom: 30
                         }}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
@@ -307,12 +307,13 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                           />
                           <Tooltip />
                           <Legend 
-                            verticalAlign="bottom" 
-                            height={60}
-                            align="center"
+                            verticalAlign="middle" 
+                            height={36}
+                            align="right"
+                            layout="vertical"
                             iconType="rect"
                             wrapperStyle={{
-                              paddingTop: "10px",
+                              paddingLeft: "10px",
                               fontSize: "9px"
                             }}
                           />
@@ -332,9 +333,9 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={chartData} margin={{
                         top: 30,
-                        right: 30,
+                        right: 120,
                         left: 40,
-                        bottom: 70
+                        bottom: 30
                       }}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis 
@@ -348,12 +349,13 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                         />
                         <Tooltip />
                         <Legend 
-                          verticalAlign="bottom" 
+                          verticalAlign="middle" 
                           height={50}
-                          align="center"
+                          align="right"
+                          layout="vertical"
                           iconType="rect"
                           wrapperStyle={{
-                            paddingTop: "10px",
+                            paddingLeft: "10px",
                             fontSize: "14px"
                           }}
                         />
@@ -382,12 +384,22 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                 </DialogHeader>
                 <div className={`${isMobile ? 'w-full' : 'w-[860px]'} h-[70vh] mx-auto`}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData} margin={isMobile ? { top: 30, right: 0, left: 0, bottom: 90 } : { top: 30, right: 30, left: 40, bottom: 70 }}>
+                    <BarChart data={chartData} margin={isMobile ? { top: 30, right: 80, left: 0, bottom: 30 } : { top: 30, right: 120, left: 40, bottom: 30 }}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={true} />
                       <YAxis tick={{ fontSize: 12 }} axisLine={true} />
                       <Tooltip />
-                      <Legend verticalAlign="bottom" height={50} align="center" iconType="rect" wrapperStyle={{ paddingTop: '10px', fontSize: isMobile ? '9px' : '14px' }} />
+                      <Legend 
+                        verticalAlign="middle" 
+                        height={isMobile ? 36 : 50} 
+                        align="right"
+                        layout="vertical"
+                        iconType="rect" 
+                        wrapperStyle={{ 
+                          paddingLeft: '10px', 
+                          fontSize: isMobile ? '9px' : '14px' 
+                        }} 
+                      />
                       <Bar dataKey="desired" fill="#10b981" name="Desejado">
                         <LabelList dataKey="desired" position="top" style={isMobile ? { fontSize: '10px' } : {}} />
                       </Bar>
