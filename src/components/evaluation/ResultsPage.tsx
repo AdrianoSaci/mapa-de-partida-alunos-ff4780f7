@@ -280,7 +280,7 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                       top: 30,
                       right: 30,
                       left: 40,
-                      bottom: 100
+                      bottom: 70
                     }}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis 
