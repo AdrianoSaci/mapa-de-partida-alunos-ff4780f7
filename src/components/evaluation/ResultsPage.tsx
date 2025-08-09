@@ -95,11 +95,72 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
       clonedContent.style.margin = '0';
       clonedContent.style.padding = '0';
       
+      // Substituir ResponsiveContainer por gráfico com dimensões fixas para PDF
+      const chartContainer = clonedContent.querySelector('.h-96');
+      if (chartContainer) {
+        chartContainer.innerHTML = `
+          <div style="width: 800px; height: 400px; margin: 0 auto;">
+            <svg width="800" height="400" viewBox="0 0 800 400" style="background: white;">
+              <!-- Grid lines -->
+              <defs>
+                <pattern id="grid" width="50" height="25" patternUnits="userSpaceOnUse">
+                  <path d="M 50 0 L 0 0 0 25" fill="none" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3,3"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+              
+              <!-- Chart bars and labels -->
+              ${chartData.map((item, index) => {
+                const x = 100 + index * 100;
+                const maxValue = Math.max(item.desired, item.minimum, item.achieved);
+                const scale = 250 / Math.max(...chartData.map(d => Math.max(d.desired, d.minimum, d.achieved)));
+                
+                const desiredHeight = item.desired * scale;
+                const minimumHeight = item.minimum * scale;
+                const achievedHeight = item.achieved * scale;
+                
+                return `
+                  <!-- Desired bar -->
+                  <rect x="${x - 30}" y="${350 - desiredHeight}" width="20" height="${desiredHeight}" fill="#10b981"/>
+                  <text x="${x - 20}" y="${350 - desiredHeight - 5}" text-anchor="middle" font-size="12" fill="#333">${item.desired}</text>
+                  
+                  <!-- Minimum bar -->
+                  <rect x="${x - 5}" y="${350 - minimumHeight}" width="20" height="${minimumHeight}" fill="#ef4444"/>
+                  <text x="${x + 5}" y="${350 - minimumHeight - 5}" text-anchor="middle" font-size="12" fill="#333">${item.minimum}</text>
+                  
+                  <!-- Achieved bar -->
+                  <rect x="${x + 20}" y="${350 - achievedHeight}" width="20" height="${achievedHeight}" fill="#fb923c"/>
+                  <text x="${x + 30}" y="${350 - achievedHeight - 5}" text-anchor="middle" font-size="12" fill="#333">${item.achieved}</text>
+                  
+                  <!-- X axis label -->
+                  <text x="${x}" y="380" text-anchor="middle" font-size="14" fill="#333">${item.name}</text>
+                `;
+              }).join('')}
+              
+              <!-- Legend -->
+              <rect x="550" y="50" width="15" height="15" fill="#10b981"/>
+              <text x="575" y="62" font-size="12" fill="#333">Desejado</text>
+              
+              <rect x="550" y="75" width="15" height="15" fill="#ef4444"/>
+              <text x="575" y="87" font-size="12" fill="#333">Mínimo</text>
+              
+              <rect x="550" y="100" width="15" height="15" fill="#fb923c"/>
+              <text x="575" y="112" font-size="12" fill="#333">Alcançado</text>
+              
+              <!-- Y axis -->
+              <line x1="80" y1="50" x2="80" y2="350" stroke="#333" stroke-width="1"/>
+              <!-- X axis -->
+              <line x1="80" y1="350" x2="750" y2="350" stroke="#333" stroke-width="1"/>
+            </svg>
+          </div>
+        `;
+      }
+      
       document.body.appendChild(pdfContainer);
       pdfContainer.appendChild(clonedContent);
       
-      // Aguardar renderização
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Aguardar renderização (aumentado para o gráfico customizado)
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Capturar com largura fixa e altura automática
       const canvas = await html2canvas(pdfContainer, {
