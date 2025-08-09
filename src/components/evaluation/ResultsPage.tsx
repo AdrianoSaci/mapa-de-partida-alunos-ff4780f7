@@ -274,24 +274,32 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                 <CardTitle className="text-xl text-green-600">Gráfico de Desempenho</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-96">
+                <div className="h-[550px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData} margin={{
                       top: 30,
                       right: 30,
-                      left: 20,
-                      bottom: 60
+                      left: 40,
+                      bottom: 100
                     }}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
+                      <XAxis 
+                        dataKey="name" 
+                        tick={{ fontSize: 12 }}
+                        axisLine={true}
+                      />
+                      <YAxis 
+                        tick={{ fontSize: 12 }}
+                        axisLine={true}
+                      />
                       <Tooltip />
                       <Legend 
                         verticalAlign="bottom" 
-                        height={40}
+                        height={50}
+                        align="center"
                         iconType="rect"
                         wrapperStyle={{
-                          paddingTop: "20px",
+                          paddingTop: "10px",
                           fontSize: "14px"
                         }}
                       />
