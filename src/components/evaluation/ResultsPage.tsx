@@ -98,60 +98,125 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
       clonedContent.style.backgroundColor = 'transparent';
       clonedContent.style.borderRadius = '0';
       
-      // Ajustar tamanhos de fonte e elementos para caber em A4
+      // Reduzir espaçamento geral entre seções
+      const spacingContainer = clonedContent.querySelector('.space-y-6');
+      if (spacingContainer) {
+        (spacingContainer as HTMLElement).style.gap = '8px';
+        (spacingContainer as HTMLElement).style.display = 'flex';
+        (spacingContainer as HTMLElement).style.flexDirection = 'column';
+      }
+      
+      // Ajustar cabeçalho principal
       const title = clonedContent.querySelector('h1');
       if (title) {
-        (title as HTMLElement).style.fontSize = '20px';
-        (title as HTMLElement).style.marginBottom = '8px';
+        (title as HTMLElement).style.fontSize = '18px';
+        (title as HTMLElement).style.marginBottom = '4px';
       }
       
-      const subtitle = clonedContent.querySelector('p');
+      const subtitle = clonedContent.querySelector('.text-center > p');
       if (subtitle) {
-        (subtitle as HTMLElement).style.fontSize = '14px';
-        (subtitle as HTMLElement).style.marginBottom = '15px';
+        (subtitle as HTMLElement).style.fontSize = '12px';
+        (subtitle as HTMLElement).style.marginBottom = '12px';
       }
       
-      // Ajustar cards
+      // Reduzir margem do cabeçalho
+      const headerSection = clonedContent.querySelector('.text-center.mb-8');
+      if (headerSection) {
+        (headerSection as HTMLElement).style.marginBottom = '16px';
+      }
+      
+      // Ajustar todos os cards
       const cards = clonedContent.querySelectorAll('.space-y-6 > *');
       cards.forEach((card, index) => {
         const cardElement = card as HTMLElement;
-        cardElement.style.marginBottom = '12px';
+        cardElement.style.marginBottom = '8px';
+        cardElement.style.pageBreakInside = 'avoid';
         
         // Títulos dos cards
         const cardTitle = cardElement.querySelector('h3, [class*="CardTitle"]');
         if (cardTitle) {
-          (cardTitle as HTMLElement).style.fontSize = '16px';
-          (cardTitle as HTMLElement).style.marginBottom = '8px';
+          (cardTitle as HTMLElement).style.fontSize = '14px';
+          (cardTitle as HTMLElement).style.marginBottom = '6px';
+        }
+        
+        // Headers dos cards
+        const cardHeader = cardElement.querySelector('[class*="CardHeader"]');
+        if (cardHeader) {
+          (cardHeader as HTMLElement).style.padding = '8px 12px 6px 12px';
         }
         
         // Conteúdo dos cards
         const cardContent = cardElement.querySelector('[class*="CardContent"]');
         if (cardContent) {
-          (cardContent as HTMLElement).style.padding = '12px';
-          (cardContent as HTMLElement).style.fontSize = '12px';
+          (cardContent as HTMLElement).style.padding = '8px 12px 12px 12px';
+          (cardContent as HTMLElement).style.fontSize = '11px';
         }
         
-        // Ajustar o gráfico
-        if (index === 1) { // Card do gráfico
+        // Card específico do gráfico (index 1)
+        if (index === 1) {
           const chartContainer = cardElement.querySelector('.h-96');
           if (chartContainer) {
-            (chartContainer as HTMLElement).style.height = '200px';
+            (chartContainer as HTMLElement).style.height = '160px';
+            (chartContainer as HTMLElement).style.marginBottom = '8px';
+          }
+          
+          // Ajustar legenda do gráfico
+          const legend = cardElement.querySelector('[class*="recharts-legend-wrapper"]');
+          if (legend) {
+            (legend as HTMLElement).style.fontSize = '10px';
+            (legend as HTMLElement).style.textAlign = 'center';
+            (legend as HTMLElement).style.marginTop = '8px';
+          }
+          
+          // Ajustar texto da legenda
+          const legendItems = cardElement.querySelectorAll('.recharts-legend-item-text');
+          legendItems.forEach(item => {
+            (item as HTMLElement).style.fontSize = '10px';
+          });
+        }
+        
+        // Card de interpretação (index 2)
+        if (index === 2) {
+          const interpretationBoxes = cardElement.querySelectorAll('.flex.items-center.gap-3');
+          interpretationBoxes.forEach(box => {
+            (box as HTMLElement).style.marginBottom = '6px';
+          });
+          
+          const tipBox = cardElement.querySelector('.bg-blue-50');
+          if (tipBox) {
+            (tipBox as HTMLElement).style.padding = '8px';
+            (tipBox as HTMLElement).style.marginTop = '8px';
           }
         }
         
-        // Ajustar textos dos cards
+        // Card de orientações importantes (index 3)
+        if (index === 3) {
+          const orientationContent = cardElement.querySelector('.bg-orange-100');
+          if (orientationContent) {
+            (orientationContent as HTMLElement).style.padding = '8px';
+          }
+        }
+        
+        // Ajustar textos gerais dos cards
         const paragraphs = cardElement.querySelectorAll('p');
         paragraphs.forEach(p => {
-          (p as HTMLElement).style.fontSize = '11px';
-          (p as HTMLElement).style.lineHeight = '1.3';
-          (p as HTMLElement).style.marginBottom = '4px';
+          (p as HTMLElement).style.fontSize = '10px';
+          (p as HTMLElement).style.lineHeight = '1.2';
+          (p as HTMLElement).style.marginBottom = '3px';
         });
         
         // Ajustar indicadores coloridos
         const colorBoxes = cardElement.querySelectorAll('div[class*="w-4 h-4"]');
         colorBoxes.forEach(box => {
-          (box as HTMLElement).style.width = '12px';
-          (box as HTMLElement).style.height = '12px';
+          (box as HTMLElement).style.width = '10px';
+          (box as HTMLElement).style.height = '10px';
+          (box as HTMLElement).style.flexShrink = '0';
+        });
+        
+        // Ajustar textos destacados
+        const strongTexts = cardElement.querySelectorAll('strong');
+        strongTexts.forEach(strong => {
+          (strong as HTMLElement).style.fontSize = '10px';
         });
       });
       
