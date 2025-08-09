@@ -137,15 +137,15 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                 `;
               }).join('')}
               
-              <!-- Legend -->
-              <rect x="700" y="60" width="18" height="18" fill="#10b981"/>
-              <text x="725" y="74" font-size="14" fill="#333">Desejado</text>
+              <!-- Legend - Centered below chart -->
+              <rect x="350" y="480" width="18" height="18" fill="#10b981"/>
+              <text x="375" y="494" font-size="14" fill="#333">Desejado</text>
               
-              <rect x="700" y="90" width="18" height="18" fill="#ef4444"/>
-              <text x="725" y="104" font-size="14" fill="#333">Mínimo</text>
+              <rect x="490" y="480" width="18" height="18" fill="#ef4444"/>
+              <text x="515" y="494" font-size="14" fill="#333">Mínimo</text>
               
-              <rect x="700" y="120" width="18" height="18" fill="#fb923c"/>
-              <text x="725" y="134" font-size="14" fill="#333">Alcançado</text>
+              <rect x="630" y="480" width="18" height="18" fill="#fb923c"/>
+              <text x="655" y="494" font-size="14" fill="#333">Alcançado</text>
               
               <!-- Y axis -->
               <line x1="100" y1="60" x2="100" y2="430" stroke="#333" stroke-width="1"/>
