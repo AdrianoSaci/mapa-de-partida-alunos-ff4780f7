@@ -72,37 +72,115 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
 
   const handleDownloadPDF = async () => {
     try {
-      const element = document.getElementById('pdf-content');
-      if (!element) return;
-
-      const canvas = await html2canvas(element, {
+      // Criar container invisível com dimensões A4 fixas
+      const pdfContainer = document.createElement('div');
+      pdfContainer.style.position = 'absolute';
+      pdfContainer.style.left = '-9999px';
+      pdfContainer.style.top = '0';
+      pdfContainer.style.width = '210mm';
+      pdfContainer.style.height = '297mm';
+      pdfContainer.style.backgroundColor = '#ffffff';
+      pdfContainer.style.padding = '15mm';
+      pdfContainer.style.boxSizing = 'border-box';
+      pdfContainer.style.fontFamily = 'Arial, sans-serif';
+      
+      // Clonar o conteúdo original
+      const originalElement = document.getElementById('pdf-content');
+      if (!originalElement) return;
+      
+      const clonedContent = originalElement.cloneNode(true) as HTMLElement;
+      
+      // Aplicar estilos específicos para PDF
+      clonedContent.style.width = '100%';
+      clonedContent.style.height = 'auto';
+      clonedContent.style.padding = '0';
+      clonedContent.style.margin = '0';
+      clonedContent.style.backgroundColor = 'transparent';
+      clonedContent.style.borderRadius = '0';
+      
+      // Ajustar tamanhos de fonte e elementos para caber em A4
+      const title = clonedContent.querySelector('h1');
+      if (title) {
+        (title as HTMLElement).style.fontSize = '20px';
+        (title as HTMLElement).style.marginBottom = '8px';
+      }
+      
+      const subtitle = clonedContent.querySelector('p');
+      if (subtitle) {
+        (subtitle as HTMLElement).style.fontSize = '14px';
+        (subtitle as HTMLElement).style.marginBottom = '15px';
+      }
+      
+      // Ajustar cards
+      const cards = clonedContent.querySelectorAll('.space-y-6 > *');
+      cards.forEach((card, index) => {
+        const cardElement = card as HTMLElement;
+        cardElement.style.marginBottom = '12px';
+        
+        // Títulos dos cards
+        const cardTitle = cardElement.querySelector('h3, [class*="CardTitle"]');
+        if (cardTitle) {
+          (cardTitle as HTMLElement).style.fontSize = '16px';
+          (cardTitle as HTMLElement).style.marginBottom = '8px';
+        }
+        
+        // Conteúdo dos cards
+        const cardContent = cardElement.querySelector('[class*="CardContent"]');
+        if (cardContent) {
+          (cardContent as HTMLElement).style.padding = '12px';
+          (cardContent as HTMLElement).style.fontSize = '12px';
+        }
+        
+        // Ajustar o gráfico
+        if (index === 1) { // Card do gráfico
+          const chartContainer = cardElement.querySelector('.h-96');
+          if (chartContainer) {
+            (chartContainer as HTMLElement).style.height = '200px';
+          }
+        }
+        
+        // Ajustar textos dos cards
+        const paragraphs = cardElement.querySelectorAll('p');
+        paragraphs.forEach(p => {
+          (p as HTMLElement).style.fontSize = '11px';
+          (p as HTMLElement).style.lineHeight = '1.3';
+          (p as HTMLElement).style.marginBottom = '4px';
+        });
+        
+        // Ajustar indicadores coloridos
+        const colorBoxes = cardElement.querySelectorAll('div[class*="w-4 h-4"]');
+        colorBoxes.forEach(box => {
+          (box as HTMLElement).style.width = '12px';
+          (box as HTMLElement).style.height = '12px';
+        });
+      });
+      
+      document.body.appendChild(pdfContainer);
+      pdfContainer.appendChild(clonedContent);
+      
+      // Aguardar um momento para o DOM se atualizar
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Gerar o canvas com dimensões A4 fixas
+      const canvas = await html2canvas(pdfContainer, {
         scale: 2,
         useCORS: true,
         backgroundColor: '#ffffff',
-        width: element.scrollWidth,
-        height: element.scrollHeight
+        width: 794, // 210mm em pixels (3.78 pixels por mm)
+        height: 1123, // 297mm em pixels
+        scrollX: 0,
+        scrollY: 0
       });
-
+      
+      // Remover o container temporário
+      document.body.removeChild(pdfContainer);
+      
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       
-      const imgWidth = 210;
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-
-      let position = 0;
-
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-
+      // Adicionar a imagem ocupando toda a página A4
+      pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+      
       pdf.save(`Relatorio_Avaliacao_${evaluationData.child.name.replace(/\s+/g, '_')}.pdf`);
       
       toast({
