@@ -280,13 +280,21 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                       top: 30,
                       right: 30,
                       left: 20,
-                      bottom: 5
+                      bottom: 60
                     }}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
                       <YAxis />
                       <Tooltip />
-                      <Legend />
+                      <Legend 
+                        verticalAlign="bottom" 
+                        height={40}
+                        iconType="rect"
+                        wrapperStyle={{
+                          paddingTop: "20px",
+                          fontSize: "14px"
+                        }}
+                      />
                       <Bar dataKey="desired" fill="#10b981" name="Desejado">
                         <LabelList dataKey="desired" position="top" />
                       </Bar>
