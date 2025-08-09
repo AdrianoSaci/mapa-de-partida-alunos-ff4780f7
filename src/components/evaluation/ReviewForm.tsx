@@ -3,9 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EvaluationData } from '@/types';
 import { skillsData } from '@/data/skills';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { toast } from '@/hooks/use-toast';
 interface ReviewFormProps {
   evaluationData: EvaluationData;
   onSubmit: (communicationAge: string) => void;
@@ -16,9 +13,6 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
   onSubmit,
   onBack
 }) => {
-  const {
-    user
-  } = useAuth();
   const calculateCommunicationAge = () => {
     const ageRanges = [{
       range: '0 a 11 meses',
@@ -60,48 +54,8 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
     }
     return communicationAge;
   };
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const communicationAge = calculateCommunicationAge();
-    if (user) {
-      try {
-        // Save evaluation to Supabase
-        const {
-          error
-        } = await supabase.from('evaluations').insert({
-          user_id: user.id,
-          caregiver_name: evaluationData.caregiver.name,
-          caregiver_email: evaluationData.caregiver.email,
-          caregiver_whatsapp: evaluationData.caregiver.whatsapp,
-          child_name: evaluationData.child.name,
-          child_date_of_birth: evaluationData.child.dateOfBirth,
-          selected_skills: evaluationData.selectedSkills,
-          scores: evaluationData.scores,
-          communication_age: communicationAge,
-          data_hora_preenchimento: new Date().toLocaleString("pt-BR")
-        });
-        if (error) {
-          console.error('Error saving evaluation:', error);
-          toast({
-            title: "Erro",
-            description: "Não foi possível salvar a avaliação. Tente novamente.",
-            variant: "destructive"
-          });
-          return;
-        }
-        toast({
-          title: "Sucesso",
-          description: "Avaliação salva com sucesso!"
-        });
-      } catch (error) {
-        console.error('Error saving evaluation:', error);
-        toast({
-          title: "Erro",
-          description: "Não foi possível salvar a avaliação. Tente novamente.",
-          variant: "destructive"
-        });
-        return;
-      }
-    }
     onSubmit(communicationAge);
   };
   return <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-4">
