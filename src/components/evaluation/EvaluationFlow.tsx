@@ -4,9 +4,10 @@ import { CaregiverDataForm } from './CaregiverDataForm';
 import { SkillsEvaluationForm } from './SkillsEvaluationForm';
 import { ReviewForm } from './ReviewForm';
 import { ResultsPage } from './ResultsPage';
+import { ThankYouPage } from './ThankYouPage';
 import { EvaluationData, Caregiver, Child } from '@/types';
 
-type EvaluationStep = 'caregiver-data' | 'skills-evaluation' | 'review' | 'results';
+type EvaluationStep = 'caregiver-data' | 'skills-evaluation' | 'review' | 'results' | 'thanks';
 
 interface EvaluationFlowProps {
   onBackToInstructions: () => void;
@@ -55,6 +56,10 @@ export const EvaluationFlow: React.FC<EvaluationFlowProps> = ({ onBackToInstruct
     setCurrentStep('caregiver-data');
   };
 
+  const handleFinishEvaluation = () => {
+    setCurrentStep('thanks');
+  };
+
   switch (currentStep) {
     case 'caregiver-data':
       return (
@@ -90,6 +95,15 @@ export const EvaluationFlow: React.FC<EvaluationFlowProps> = ({ onBackToInstruct
       return (
         <ResultsPage 
           evaluationData={evaluationData as EvaluationData}
+          onRestart={handleRestartEvaluation}
+          onBackToInstructions={onBackToInstructions}
+          onFinish={handleFinishEvaluation}
+        />
+      );
+    
+    case 'thanks':
+      return (
+        <ThankYouPage 
           onRestart={handleRestartEvaluation}
           onBackToInstructions={onBackToInstructions}
         />

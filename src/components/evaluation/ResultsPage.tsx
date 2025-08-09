@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EvaluationData } from '@/types';
@@ -21,13 +21,16 @@ interface ResultsPageProps {
   evaluationData: EvaluationData;
   onRestart: () => void;
   onBackToInstructions: () => void;
+  onFinish: () => void;
 }
 
 export const ResultsPage: React.FC<ResultsPageProps> = ({
   evaluationData,
   onRestart,
-  onBackToInstructions
+  onBackToInstructions,
+  onFinish
 }) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const chartData = [{
     name: '0-11m',
     desired: 13,
@@ -106,6 +109,9 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
         title: "Sucesso",
         description: "Relatório baixado com sucesso!"
       });
+      
+      // Fechar o dialog automaticamente após sucesso
+      setIsDialogOpen(false);
     } catch (error) {
       console.error('Error generating PDF:', error);
       toast({
@@ -229,12 +235,12 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
           <Button onClick={onRestart} className="bg-blue-600 hover:bg-blue-700">
             Refazer Avaliação
           </Button>
           
-          <Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button className="bg-orange-600 hover:bg-orange-700">
                 Baixar Relatório
@@ -248,13 +254,17 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
-                <Button variant="outline">Cancelar</Button>
+                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancelar</Button>
                 <Button onClick={handleDownloadPDF} className="bg-orange-600 hover:bg-orange-700">
                   Confirmar Download
                 </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
+
+          <Button onClick={onFinish} className="bg-green-600 hover:bg-green-700">
+            Finalizar Avaliação
+          </Button>
         </div>
 
         <div className="flex justify-center mt-8">
