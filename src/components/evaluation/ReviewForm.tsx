@@ -117,7 +117,7 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
             Voltar
           </Button>
           <Button type="button" onClick={handleSubmit} className="flex-1 bg-green-600 hover:bg-green-700">
-            Finalizar Avaliação
+            Finalizar Preenchimento
           </Button>
         </div>
       </div>
