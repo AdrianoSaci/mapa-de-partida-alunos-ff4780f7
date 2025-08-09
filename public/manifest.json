@@ -1,8 +1,8 @@
 
 {
-  "name": "Idade de Fala - Avaliação de Comunicação Infantil",
-  "short_name": "Idade de Fala",
-  "description": "Aplicativo para avaliação da idade de comunicação de crianças",
+  "name": "Mapa de Partida Alunos",
+  "short_name": "Mapa de Partida",
+  "description": "Aplicativo para mapeamento da situação inicial dos alunos",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
