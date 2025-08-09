@@ -313,17 +313,17 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                             iconType="rect"
                             wrapperStyle={{
                               paddingTop: "10px",
-                              fontSize: "13px"
+                              fontSize: "9px"
                             }}
                           />
                           <Bar dataKey="desired" fill="#10b981" name="Desejado">
-                            <LabelList dataKey="desired" position="top" style={{ fontSize: '6px' }} />
+                            <LabelList dataKey="desired" position="top" style={{ fontSize: '10px' }} />
                           </Bar>
                           <Bar dataKey="minimum" fill="#ef4444" name="Mínimo">
-                            <LabelList dataKey="minimum" position="top" style={{ fontSize: '6px' }} />
+                            <LabelList dataKey="minimum" position="top" style={{ fontSize: '10px' }} />
                           </Bar>
                           <Bar dataKey="achieved" fill="#fb923c" name="Alcançado">
-                            <LabelList dataKey="achieved" position="top" style={{ fontSize: '6px' }} />
+                            <LabelList dataKey="achieved" position="top" style={{ fontSize: '10px' }} />
                           </Bar>
                         </BarChart>
                       </ResponsiveContainer>
@@ -387,15 +387,15 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                       <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={true} />
                       <YAxis tick={{ fontSize: 12 }} axisLine={true} />
                       <Tooltip />
-                      <Legend verticalAlign="bottom" height={50} align="center" iconType="rect" wrapperStyle={{ paddingTop: '10px', fontSize: '14px' }} />
+                      <Legend verticalAlign="bottom" height={50} align="center" iconType="rect" wrapperStyle={{ paddingTop: '10px', fontSize: isMobile ? '9px' : '14px' }} />
                       <Bar dataKey="desired" fill="#10b981" name="Desejado">
-                        <LabelList dataKey="desired" position="top" style={isMobile ? { fontSize: '6px' } : {}} />
+                        <LabelList dataKey="desired" position="top" style={isMobile ? { fontSize: '10px' } : {}} />
                       </Bar>
                       <Bar dataKey="minimum" fill="#ef4444" name="Mínimo">
-                        <LabelList dataKey="minimum" position="top" style={isMobile ? { fontSize: '6px' } : {}} />
+                        <LabelList dataKey="minimum" position="top" style={isMobile ? { fontSize: '10px' } : {}} />
                       </Bar>
                       <Bar dataKey="achieved" fill="#fb923c" name="Alcançado">
-                        <LabelList dataKey="achieved" position="top" style={isMobile ? { fontSize: '6px' } : {}} />
+                        <LabelList dataKey="achieved" position="top" style={isMobile ? { fontSize: '10px' } : {}} />
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
