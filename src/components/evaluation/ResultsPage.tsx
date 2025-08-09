@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { EvaluationData } from '@/types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts';
 import { toast } from '@/hooks/use-toast';
@@ -278,57 +279,100 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
               </CardHeader>
               <CardContent>
                 <div
-                  className={`chart-container ${isMobile ? 'w-[90%] mx-auto' : 'w-full h-[550px]'} cursor-zoom-in`}
+                  className={`chart-container ${isMobile ? 'w-full' : 'w-full h-[550px]'} cursor-zoom-in`}
                   role="button"
                   aria-label="Ampliar gráfico"
                   onClick={() => setIsChartOpen(true)}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setIsChartOpen(true); } }}
                   tabIndex={0}
                 >
-                  <ResponsiveContainer width="100%" height={isMobile ? undefined : "100%"} aspect={isMobile ? 1.4 : undefined}>
-                    <BarChart data={chartData} margin={isMobile ? {
-                      top: 20,
-                      right: 20,
-                      left: 40,
-                      bottom: 95
-                    } : {
-                      top: 30,
-                      right: 30,
-                      left: 40,
-                      bottom: 70
-                    }}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis 
-                        dataKey="name" 
-                        tick={{ fontSize: isMobile ? 10 : 12 }}
-                        axisLine={true}
-                      />
-                      <YAxis 
-                        tick={{ fontSize: isMobile ? 10 : 12 }}
-                        axisLine={true}
-                      />
-                      <Tooltip />
-                      <Legend 
-                        verticalAlign="bottom" 
-                        height={isMobile ? 40 : 50}
-                        align="center"
-                        iconType="rect"
-                        wrapperStyle={{
-                          paddingTop: "10px",
-                          fontSize: isMobile ? "12px" : "14px"
-                        }}
-                      />
-                      <Bar dataKey="desired" fill="#10b981" name="Desejado">
-                        <LabelList dataKey="desired" position="top" />
-                      </Bar>
-                      <Bar dataKey="minimum" fill="#ef4444" name="Mínimo">
-                        <LabelList dataKey="minimum" position="top" />
-                      </Bar>
-                      <Bar dataKey="achieved" fill="#fb923c" name="Alcançado">
-                        <LabelList dataKey="achieved" position="top" />
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
+                  {isMobile ? (
+                    <div className="w-[90%] mx-auto">
+                      <AspectRatio ratio={16/12}>
+                        <div className="h-full w-full">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={chartData} margin={{
+                              top: 20,
+                              right: 20,
+                              left: 40,
+                              bottom: 95
+                            }}>
+                              <CartesianGrid strokeDasharray="3 3" />
+                              <XAxis 
+                                dataKey="name" 
+                                tick={{ fontSize: 10 }}
+                                axisLine={true}
+                              />
+                              <YAxis 
+                                tick={{ fontSize: 10 }}
+                                axisLine={true}
+                              />
+                              <Tooltip />
+                              <Legend 
+                                verticalAlign="bottom" 
+                                height={40}
+                                align="center"
+                                iconType="rect"
+                                wrapperStyle={{
+                                  paddingTop: "10px",
+                                  fontSize: "12px"
+                                }}
+                              />
+                              <Bar dataKey="desired" fill="#10b981" name="Desejado">
+                                <LabelList dataKey="desired" position="top" />
+                              </Bar>
+                              <Bar dataKey="minimum" fill="#ef4444" name="Mínimo">
+                                <LabelList dataKey="minimum" position="top" />
+                              </Bar>
+                              <Bar dataKey="achieved" fill="#fb923c" name="Alcançado">
+                                <LabelList dataKey="achieved" position="top" />
+                              </Bar>
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </AspectRatio>
+                    </div>
+                  ) : (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={chartData} margin={{
+                        top: 30,
+                        right: 30,
+                        left: 40,
+                        bottom: 70
+                      }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis 
+                          dataKey="name" 
+                          tick={{ fontSize: 12 }}
+                          axisLine={true}
+                        />
+                        <YAxis 
+                          tick={{ fontSize: 12 }}
+                          axisLine={true}
+                        />
+                        <Tooltip />
+                        <Legend 
+                          verticalAlign="bottom" 
+                          height={50}
+                          align="center"
+                          iconType="rect"
+                          wrapperStyle={{
+                            paddingTop: "10px",
+                            fontSize: "14px"
+                          }}
+                        />
+                        <Bar dataKey="desired" fill="#10b981" name="Desejado">
+                          <LabelList dataKey="desired" position="top" />
+                        </Bar>
+                        <Bar dataKey="minimum" fill="#ef4444" name="Mínimo">
+                          <LabelList dataKey="minimum" position="top" />
+                        </Bar>
+                        <Bar dataKey="achieved" fill="#fb923c" name="Alcançado">
+                          <LabelList dataKey="achieved" position="top" />
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
                 </div>
                 <p className="md:hidden text-center text-xs text-gray-500 mt-2">Toque no gráfico para ampliar</p>
               </CardContent>
