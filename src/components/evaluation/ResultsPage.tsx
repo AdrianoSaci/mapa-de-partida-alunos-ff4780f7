@@ -287,50 +287,46 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                   tabIndex={0}
                 >
                   {isMobile ? (
-                    <div className="w-[90%] mx-auto">
-                      <AspectRatio ratio={16/12}>
-                        <div className="h-full w-full">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={chartData} margin={{
-                              top: 20,
-                              right: 20,
-                              left: 40,
-                              bottom: 95
-                            }}>
-                              <CartesianGrid strokeDasharray="3 3" />
-                              <XAxis 
-                                dataKey="name" 
-                                tick={{ fontSize: 10 }}
-                                axisLine={true}
-                              />
-                              <YAxis 
-                                tick={{ fontSize: 10 }}
-                                axisLine={true}
-                              />
-                              <Tooltip />
-                              <Legend 
-                                verticalAlign="bottom" 
-                                height={40}
-                                align="center"
-                                iconType="rect"
-                                wrapperStyle={{
-                                  paddingTop: "10px",
-                                  fontSize: "12px"
-                                }}
-                              />
-                              <Bar dataKey="desired" fill="#10b981" name="Desejado">
-                                <LabelList dataKey="desired" position="top" />
-                              </Bar>
-                              <Bar dataKey="minimum" fill="#ef4444" name="Mínimo">
-                                <LabelList dataKey="minimum" position="top" />
-                              </Bar>
-                              <Bar dataKey="achieved" fill="#fb923c" name="Alcançado">
-                                <LabelList dataKey="achieved" position="top" />
-                              </Bar>
-                            </BarChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </AspectRatio>
+                    <div className="w-[90%] mx-auto h-[500px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={chartData} margin={{
+                          top: 30,
+                          right: 30,
+                          left: 50,
+                          bottom: 110
+                        }}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis 
+                            dataKey="name" 
+                            tick={{ fontSize: 10 }}
+                            axisLine={true}
+                          />
+                          <YAxis 
+                            tick={{ fontSize: 10 }}
+                            axisLine={true}
+                          />
+                          <Tooltip />
+                          <Legend 
+                            verticalAlign="bottom" 
+                            height={60}
+                            align="center"
+                            iconType="rect"
+                            wrapperStyle={{
+                              paddingTop: "10px",
+                              fontSize: "13px"
+                            }}
+                          />
+                          <Bar dataKey="desired" fill="#10b981" name="Desejado">
+                            <LabelList dataKey="desired" position="top" />
+                          </Bar>
+                          <Bar dataKey="minimum" fill="#ef4444" name="Mínimo">
+                            <LabelList dataKey="minimum" position="top" />
+                          </Bar>
+                          <Bar dataKey="achieved" fill="#fb923c" name="Alcançado">
+                            <LabelList dataKey="achieved" position="top" />
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
                     </div>
                   ) : (
                     <ResponsiveContainer width="100%" height="100%">
@@ -379,14 +375,14 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
             </Card>
 
             <Dialog open={isChartOpen} onOpenChange={setIsChartOpen}>
-              <DialogContent className="max-w-[95vw] sm:max-w-[900px]">
+              <DialogContent className={`${isMobile ? 'max-w-[90vw] w-[90vw]' : 'max-w-[900px]'}`}>
                 <DialogHeader>
                   <DialogTitle>Gráfico ampliado</DialogTitle>
                   <DialogDescription>Visualização em tamanho maior do desempenho.</DialogDescription>
                 </DialogHeader>
-                <div className="w-[95vw] sm:w-[860px] h-[70vh] mx-auto">
+                <div className={`${isMobile ? 'w-full' : 'w-[860px]'} h-[70vh] mx-auto`}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData} margin={{ top: 30, right: 30, left: 40, bottom: 70 }}>
+                    <BarChart data={chartData} margin={isMobile ? { top: 30, right: 30, left: 50, bottom: 90 } : { top: 30, right: 30, left: 40, bottom: 70 }}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={true} />
                       <YAxis tick={{ fontSize: 12 }} axisLine={true} />
