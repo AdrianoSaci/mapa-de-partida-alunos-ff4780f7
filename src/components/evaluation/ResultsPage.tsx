@@ -72,179 +72,89 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
 
   const handleDownloadPDF = async () => {
     try {
-      // Criar container invisível com dimensões A4 fixas
+      // Criar container invisível com largura fixa desktop
       const pdfContainer = document.createElement('div');
       pdfContainer.style.position = 'absolute';
       pdfContainer.style.left = '-9999px';
       pdfContainer.style.top = '0';
-      pdfContainer.style.width = '210mm';
-      pdfContainer.style.height = '297mm';
+      pdfContainer.style.width = '1200px'; // Largura fixa desktop
       pdfContainer.style.backgroundColor = '#ffffff';
-      pdfContainer.style.padding = '15mm';
+      pdfContainer.style.padding = '40px';
       pdfContainer.style.boxSizing = 'border-box';
-      pdfContainer.style.fontFamily = 'Arial, sans-serif';
+      pdfContainer.style.fontFamily = 'system-ui, -apple-system, sans-serif';
       
-      // Clonar o conteúdo original
+      // Clonar o conteúdo original mantendo estilos
       const originalElement = document.getElementById('pdf-content');
       if (!originalElement) return;
       
       const clonedContent = originalElement.cloneNode(true) as HTMLElement;
       
-      // Aplicar estilos específicos para PDF
+      // Manter estilos originais, apenas ajustar para largura fixa
       clonedContent.style.width = '100%';
-      clonedContent.style.height = 'auto';
-      clonedContent.style.padding = '0';
+      clonedContent.style.maxWidth = 'none';
       clonedContent.style.margin = '0';
-      clonedContent.style.backgroundColor = 'transparent';
-      clonedContent.style.borderRadius = '0';
-      
-      // Reduzir espaçamento geral entre seções
-      const spacingContainer = clonedContent.querySelector('.space-y-6');
-      if (spacingContainer) {
-        (spacingContainer as HTMLElement).style.gap = '8px';
-        (spacingContainer as HTMLElement).style.display = 'flex';
-        (spacingContainer as HTMLElement).style.flexDirection = 'column';
-      }
-      
-      // Ajustar cabeçalho principal
-      const title = clonedContent.querySelector('h1');
-      if (title) {
-        (title as HTMLElement).style.fontSize = '18px';
-        (title as HTMLElement).style.marginBottom = '4px';
-      }
-      
-      const subtitle = clonedContent.querySelector('.text-center > p');
-      if (subtitle) {
-        (subtitle as HTMLElement).style.fontSize = '12px';
-        (subtitle as HTMLElement).style.marginBottom = '12px';
-      }
-      
-      // Reduzir margem do cabeçalho
-      const headerSection = clonedContent.querySelector('.text-center.mb-8');
-      if (headerSection) {
-        (headerSection as HTMLElement).style.marginBottom = '16px';
-      }
-      
-      // Ajustar todos os cards
-      const cards = clonedContent.querySelectorAll('.space-y-6 > *');
-      cards.forEach((card, index) => {
-        const cardElement = card as HTMLElement;
-        cardElement.style.marginBottom = '8px';
-        cardElement.style.pageBreakInside = 'avoid';
-        
-        // Títulos dos cards
-        const cardTitle = cardElement.querySelector('h3, [class*="CardTitle"]');
-        if (cardTitle) {
-          (cardTitle as HTMLElement).style.fontSize = '14px';
-          (cardTitle as HTMLElement).style.marginBottom = '6px';
-        }
-        
-        // Headers dos cards
-        const cardHeader = cardElement.querySelector('[class*="CardHeader"]');
-        if (cardHeader) {
-          (cardHeader as HTMLElement).style.padding = '8px 12px 6px 12px';
-        }
-        
-        // Conteúdo dos cards
-        const cardContent = cardElement.querySelector('[class*="CardContent"]');
-        if (cardContent) {
-          (cardContent as HTMLElement).style.padding = '8px 12px 12px 12px';
-          (cardContent as HTMLElement).style.fontSize = '11px';
-        }
-        
-        // Card específico do gráfico (index 1)
-        if (index === 1) {
-          const chartContainer = cardElement.querySelector('.h-96');
-          if (chartContainer) {
-            (chartContainer as HTMLElement).style.height = '160px';
-            (chartContainer as HTMLElement).style.marginBottom = '8px';
-          }
-          
-          // Ajustar legenda do gráfico
-          const legend = cardElement.querySelector('[class*="recharts-legend-wrapper"]');
-          if (legend) {
-            (legend as HTMLElement).style.fontSize = '10px';
-            (legend as HTMLElement).style.textAlign = 'center';
-            (legend as HTMLElement).style.marginTop = '8px';
-          }
-          
-          // Ajustar texto da legenda
-          const legendItems = cardElement.querySelectorAll('.recharts-legend-item-text');
-          legendItems.forEach(item => {
-            (item as HTMLElement).style.fontSize = '10px';
-          });
-        }
-        
-        // Card de interpretação (index 2)
-        if (index === 2) {
-          const interpretationBoxes = cardElement.querySelectorAll('.flex.items-center.gap-3');
-          interpretationBoxes.forEach(box => {
-            (box as HTMLElement).style.marginBottom = '6px';
-          });
-          
-          const tipBox = cardElement.querySelector('.bg-blue-50');
-          if (tipBox) {
-            (tipBox as HTMLElement).style.padding = '8px';
-            (tipBox as HTMLElement).style.marginTop = '8px';
-          }
-        }
-        
-        // Card de orientações importantes (index 3)
-        if (index === 3) {
-          const orientationContent = cardElement.querySelector('.bg-orange-100');
-          if (orientationContent) {
-            (orientationContent as HTMLElement).style.padding = '8px';
-          }
-        }
-        
-        // Ajustar textos gerais dos cards
-        const paragraphs = cardElement.querySelectorAll('p');
-        paragraphs.forEach(p => {
-          (p as HTMLElement).style.fontSize = '10px';
-          (p as HTMLElement).style.lineHeight = '1.2';
-          (p as HTMLElement).style.marginBottom = '3px';
-        });
-        
-        // Ajustar indicadores coloridos
-        const colorBoxes = cardElement.querySelectorAll('div[class*="w-4 h-4"]');
-        colorBoxes.forEach(box => {
-          (box as HTMLElement).style.width = '10px';
-          (box as HTMLElement).style.height = '10px';
-          (box as HTMLElement).style.flexShrink = '0';
-        });
-        
-        // Ajustar textos destacados
-        const strongTexts = cardElement.querySelectorAll('strong');
-        strongTexts.forEach(strong => {
-          (strong as HTMLElement).style.fontSize = '10px';
-        });
-      });
+      clonedContent.style.padding = '0';
       
       document.body.appendChild(pdfContainer);
       pdfContainer.appendChild(clonedContent);
       
-      // Aguardar um momento para o DOM se atualizar
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Aguardar renderização
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Gerar o canvas com dimensões A4 fixas
+      // Capturar com largura fixa e altura automática
       const canvas = await html2canvas(pdfContainer, {
-        scale: 2,
+        scale: 1.5,
         useCORS: true,
         backgroundColor: '#ffffff',
-        width: 794, // 210mm em pixels (3.78 pixels por mm)
-        height: 1123, // 297mm em pixels
+        width: 1200,
+        height: pdfContainer.scrollHeight,
         scrollX: 0,
-        scrollY: 0
+        scrollY: 0,
+        logging: false
       });
       
-      // Remover o container temporário
+      // Remover container temporário
       document.body.removeChild(pdfContainer);
       
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/png', 0.95);
       const pdf = new jsPDF('p', 'mm', 'a4');
       
-      // Adicionar a imagem ocupando toda a página A4
-      pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+      // Calcular dimensões para caber no A4
+      const pageWidth = 210; // mm
+      const pageHeight = 297; // mm
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      
+      // Calcular escala para caber na largura da página
+      const scale = pageWidth / (imgWidth * 0.264583); // 0.264583 = mm por pixel
+      const scaledHeight = (imgHeight * 0.264583) * scale;
+      
+      if (scaledHeight <= pageHeight) {
+        // Cabe em uma página
+        pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, scaledHeight);
+      } else {
+        // Múltiplas páginas
+        let yOffset = 0;
+        let remainingHeight = scaledHeight;
+        
+        while (remainingHeight > 0) {
+          const sliceHeight = Math.min(pageHeight, remainingHeight);
+          
+          if (yOffset > 0) pdf.addPage();
+          
+          pdf.addImage(
+            imgData, 
+            'PNG', 
+            0, 
+            -yOffset, 
+            pageWidth, 
+            scaledHeight
+          );
+          
+          yOffset += sliceHeight;
+          remainingHeight -= sliceHeight;
+        }
+      }
       
       pdf.save(`Relatorio_Avaliacao_${evaluationData.child.name.replace(/\s+/g, '_')}.pdf`);
       
@@ -253,7 +163,6 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
         description: "Relatório baixado com sucesso!"
       });
       
-      // Fechar o dialog automaticamente após sucesso
       setIsDialogOpen(false);
     } catch (error) {
       console.error('Error generating PDF:', error);
