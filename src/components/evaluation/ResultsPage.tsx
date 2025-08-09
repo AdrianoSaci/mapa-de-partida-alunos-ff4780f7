@@ -99,8 +99,8 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
       const chartContainer = clonedContent.querySelector('.h-96');
       if (chartContainer) {
         chartContainer.innerHTML = `
-          <div style="width: 1000px; height: 500px; margin: 0 auto;">
-            <svg width="1000" height="500" viewBox="0 0 1000 500" style="background: white;">
+          <div style="width: 1000px; height: 550px; margin: 0 auto;">
+            <svg width="1000" height="550" viewBox="0 0 1000 550" style="background: white;">
               <!-- Grid lines -->
               <defs>
                 <pattern id="grid" width="60" height="30" patternUnits="userSpaceOnUse">
@@ -138,14 +138,14 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
               }).join('')}
               
               <!-- Legend - Centered below chart -->
-              <rect x="350" y="480" width="18" height="18" fill="#10b981"/>
-              <text x="375" y="494" font-size="14" fill="#333">Desejado</text>
+              <rect x="350" y="510" width="18" height="18" fill="#10b981"/>
+              <text x="375" y="524" font-size="14" fill="#333">Desejado</text>
               
-              <rect x="490" y="480" width="18" height="18" fill="#ef4444"/>
-              <text x="515" y="494" font-size="14" fill="#333">Mínimo</text>
+              <rect x="490" y="510" width="18" height="18" fill="#ef4444"/>
+              <text x="515" y="524" font-size="14" fill="#333">Mínimo</text>
               
-              <rect x="630" y="480" width="18" height="18" fill="#fb923c"/>
-              <text x="655" y="494" font-size="14" fill="#333">Alcançado</text>
+              <rect x="630" y="510" width="18" height="18" fill="#fb923c"/>
+              <text x="655" y="524" font-size="14" fill="#333">Alcançado</text>
               
               <!-- Y axis -->
               <line x1="100" y1="60" x2="100" y2="430" stroke="#333" stroke-width="1"/>
