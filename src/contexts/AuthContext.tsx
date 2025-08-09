@@ -116,8 +116,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) throw error;
 
-      // Don't auto-redirect on signup - user needs to confirm email
-      console.log('Registration successful. Please check your email to confirm your account.');
+      // Log detailed information about the signup
+      console.log('Registration data:', data);
+      console.log('User created:', data.user);
+      console.log('Session:', data.session);
+      
+      // Check if email confirmation is required
+      if (data.user && !data.session) {
+        console.log('Email confirmation required. Please check your email to confirm your account.');
+        throw new Error('Cadastro realizado! Verifique seu email para confirmar a conta. Se não recebeu o email, verifique a pasta de spam ou desabilite a confirmação por email nas configurações do Supabase.');
+      } else if (data.session) {
+        console.log('User logged in immediately - email confirmation disabled');
+      }
       
     } catch (error) {
       console.error('Registration error:', error);
