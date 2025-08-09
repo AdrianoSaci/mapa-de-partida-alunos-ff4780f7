@@ -276,13 +276,13 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                 <CardTitle className="text-xl text-green-600">Gráfico de Desempenho</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className={`chart-container ${isMobile ? 'h-[400px]' : 'h-[550px]'}`}>
+                <div className={`chart-container ${isMobile ? 'h-[480px]' : 'h-[550px]'}`}>
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData} margin={isMobile ? {
                       top: 20,
-                      right: 10,
-                      left: 30,
-                      bottom: 80
+                      right: 20,
+                      left: 40,
+                      bottom: 95
                     } : {
                       top: 30,
                       right: 30,
