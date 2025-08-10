@@ -7,6 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { toast } from '@/hooks/use-toast';
 import { calculateAge } from '@/utils/ageCalculator';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { skillsData } from '@/data/skills';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import {
@@ -456,6 +457,32 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                   <p className="text-orange-800 leading-relaxed">
                     De posse do resultado da idade real de comunicação do seu filho, você deve procurar dentro do curso o Módulo <strong>"O QUE ENSINAR? (usar idade de comunicação do Mapa)"</strong> e colocar em prática todo o conteúdo disponível. Caso tenha alguma dúvida, fale com nossa Equipe de Suporte.
                   </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl text-green-600">Habilidades Selecionadas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {skillsData.map(group => {
+                    const selectedSkills = evaluationData.selectedSkills[group.ageRange] || [];
+                    if (selectedSkills.length === 0) return null;
+                    return (
+                      <div key={group.ageRange}>
+                        <h4 className="font-semibold text-gray-800 mb-2">
+                          {group.ageRange} ({selectedSkills.length} habilidades)
+                        </h4>
+                        <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
+                          {selectedSkills.map(skill => (
+                            <li key={skill}>{skill}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
