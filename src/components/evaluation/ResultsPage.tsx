@@ -99,6 +99,17 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
       clonedContent.style.margin = '0';
       clonedContent.style.padding = '0';
       
+      // Calcular rótulos do eixo Y antes da criação do SVG
+      const maxValue = Math.max(...chartData.map(d => Math.max(d.desired, d.minimum, d.achieved)));
+      const scale = 350 / maxValue;
+      const step = Math.ceil(maxValue / 7);
+      const yAxisLabels = [];
+      for (let i = 0; i <= maxValue; i += step) {
+        const y = 430 - (i * scale);
+        yAxisLabels.push(`<text x="90" y="${y + 4}" text-anchor="end" font-size="12" fill="#666">${i}</text>`);
+      }
+      const yAxisLabelsHTML = yAxisLabels.join('');
+
       // Substituir ResponsiveContainer por gráfico com dimensões fixas para PDF
       const chartContainer = clonedContent.querySelector('.chart-container');
       if (chartContainer) {
@@ -114,10 +125,8 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
               <rect width="100%" height="100%" fill="url(#grid)" />
               
               <!-- Chart bars and labels -->
-              ${chartData.map((item, index) => {
-                const x = 150 + index * 130;
-                const maxValue = Math.max(item.desired, item.minimum, item.achieved);
-                const scale = 350 / Math.max(...chartData.map(d => Math.max(d.desired, d.minimum, d.achieved)));
+               ${chartData.map((item, index) => {
+                 const x = 150 + index * 130;
                 
                 const desiredHeight = item.desired * scale;
                 const minimumHeight = item.minimum * scale;
@@ -154,18 +163,8 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
               <!-- Y axis -->
               <line x1="100" y1="60" x2="100" y2="430" stroke="#333" stroke-width="1"/>
               
-              <!-- Y axis labels -->
-              ${(() => {
-                const maxValue = Math.max(...chartData.map(d => Math.max(d.desired, d.minimum, d.achieved)));
-                const scale = 350 / maxValue;
-                const yLabels = [];
-                const step = Math.ceil(maxValue / 7);
-                for (let i = 0; i <= maxValue; i += step) {
-                  const y = 430 - (i * scale);
-                  yLabels.push(`<text x="90" y="${y + 4}" text-anchor="end" font-size="12" fill="#666">${i}</text>`);
-                }
-                return yLabels.join('');
-              })()}
+               <!-- Y axis labels -->
+               ${yAxisLabelsHTML}
               
               <!-- X axis -->
               <line x1="100" y1="430" x2="900" y2="430" stroke="#333" stroke-width="1"/>
@@ -205,8 +204,8 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
       const imgHeight = canvas.height;
       
       // Calcular escala para caber na largura da página
-      const scale = pageWidth / (imgWidth * 0.264583); // 0.264583 = mm por pixel
-      const scaledHeight = (imgHeight * 0.264583) * scale;
+      const pdfScale = pageWidth / (imgWidth * 0.264583); // 0.264583 = mm por pixel
+      const scaledHeight = (imgHeight * 0.264583) * pdfScale;
       
       if (scaledHeight <= pageHeight) {
         // Cabe em uma página
@@ -221,14 +220,14 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
           
           if (yOffset > 0) pdf.addPage();
           
-          pdf.addImage(
-            imgData, 
-            'PNG', 
-            0, 
-            -yOffset, 
-            pageWidth, 
-            scaledHeight
-          );
+            pdf.addImage(
+              imgData, 
+              'PNG', 
+              0, 
+              -yOffset, 
+              pageWidth, 
+              scaledHeight
+            );
           
           yOffset += sliceHeight;
           remainingHeight -= sliceHeight;
