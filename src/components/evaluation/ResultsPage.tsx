@@ -277,7 +277,7 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
               <CardHeader>
                 <CardTitle className="text-xl text-green-600">Gráfico de Desempenho</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-0 py-6 pt-0">
                 <div
                   className={`chart-container ${isMobile ? 'w-full' : 'w-full h-[550px]'} cursor-zoom-in`}
                   role="button"
