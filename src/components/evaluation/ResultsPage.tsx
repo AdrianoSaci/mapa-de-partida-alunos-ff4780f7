@@ -275,7 +275,7 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl text-green-600">Gráfico de Desempenho</CardTitle>
+                <CardTitle className="text-lg text-green-600">Gráfico de Desempenho</CardTitle>
               </CardHeader>
               <CardContent>
                 <div
