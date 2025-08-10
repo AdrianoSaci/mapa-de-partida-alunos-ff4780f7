@@ -292,7 +292,7 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                         <BarChart data={chartData} margin={{
                           top: 30,
                           right: 0,
-                          left: 0,
+                          left: -20,
                           bottom: 110
                         }}>
                           <CartesianGrid strokeDasharray="3 3" />
