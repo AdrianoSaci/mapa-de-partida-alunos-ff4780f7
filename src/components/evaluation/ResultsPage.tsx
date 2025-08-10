@@ -410,15 +410,15 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center gap-4">
-                    <div className="w-4 h-4 bg-green-500 rounded"></div>
+                    <div className="w-4 h-4 shrink-0 bg-green-500 rounded"></div>
                     <p className="text-sm"><strong>Barras Verdes (Desejado):</strong> Representa o número ideal de habilidades que a criança deveria ter desenvolvido para cada faixa etária. É a meta de desenvolvimento esperada.</p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="w-4 h-4 bg-red-500 rounded"></div>
+                    <div className="w-4 h-4 shrink-0 bg-red-500 rounded"></div>
                     <p className="text-sm"><strong>Barras Vermelhas (Mínimo):</strong> Representa o número mínimo de habilidades necessárias para um desenvolvimento adequado. Valores abaixo deste indicam necessidade de atenção especial.</p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="w-4 h-4 bg-orange-500 rounded"></div>
+                    <div className="w-4 h-4 shrink-0 bg-orange-500 rounded"></div>
                     <p className="text-sm"><strong>Barras Laranjas (Alcançado):</strong> Representa quantas habilidades a criança já desenvolveu em cada faixa etária, baseado na avaliação realizada.</p>
                   </div>
                   <div className="mt-6 p-4 bg-blue-50 rounded-lg">
