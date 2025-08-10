@@ -153,6 +153,20 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
               
               <!-- Y axis -->
               <line x1="100" y1="60" x2="100" y2="430" stroke="#333" stroke-width="1"/>
+              
+              <!-- Y axis labels -->
+              ${(() => {
+                const maxValue = Math.max(...chartData.map(d => Math.max(d.desired, d.minimum, d.achieved)));
+                const scale = 350 / maxValue;
+                const yLabels = [];
+                const step = Math.ceil(maxValue / 7);
+                for (let i = 0; i <= maxValue; i += step) {
+                  const y = 430 - (i * scale);
+                  yLabels.push(`<text x="90" y="${y + 4}" text-anchor="end" font-size="12" fill="#666">${i}</text>`);
+                }
+                return yLabels.join('');
+              })()}
+              
               <!-- X axis -->
               <line x1="100" y1="430" x2="900" y2="430" stroke="#333" stroke-width="1"/>
             </svg>
