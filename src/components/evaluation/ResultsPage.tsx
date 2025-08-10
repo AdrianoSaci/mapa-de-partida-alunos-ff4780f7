@@ -277,7 +277,7 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
               <CardHeader>
                 <CardTitle className="text-xl text-green-600">Gráfico de Desempenho</CardTitle>
               </CardHeader>
-              <CardContent className="px-0 py-6 pt-0 pb-2">
+              <CardContent className="px-0 py-6 pt-0">
                 <div
                   className={`chart-container ${isMobile ? 'w-full' : 'w-full h-[550px]'} cursor-zoom-in`}
                   role="button"
@@ -293,7 +293,7 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                           top: 30,
                           right: 0,
                           left: -20,
-                          bottom: 80
+                          bottom: 110
                         }}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
@@ -334,7 +334,7 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                         top: 30,
                         right: 30,
                         left: 0,
-                        bottom: 50
+                        bottom: 70
                       }}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis 
