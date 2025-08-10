@@ -370,7 +370,7 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                     </ResponsiveContainer>
                   )}
                 </div>
-                <p className="md:hidden text-center text-xs text-gray-500 mt-2">Toque no gráfico para ampliar</p>
+                <p className="md:hidden text-center text-xs text-gray-500 mt-6">Toque no gráfico para ampliar</p>
               </CardContent>
             </Card>
 
