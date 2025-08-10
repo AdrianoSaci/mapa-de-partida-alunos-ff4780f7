@@ -293,7 +293,7 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                           top: 30,
                           right: 0,
                           left: -20,
-                          bottom: 80
+                          bottom: 20
                         }}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
@@ -308,11 +308,11 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                           <Tooltip />
                           <Legend 
                             verticalAlign="bottom" 
-                            height={60}
+                            height={40}
                             align="center"
                             iconType="rect"
                             wrapperStyle={{
-                              paddingTop: "10px",
+                              paddingTop: "5px",
                               fontSize: "9px"
                             }}
                           />
