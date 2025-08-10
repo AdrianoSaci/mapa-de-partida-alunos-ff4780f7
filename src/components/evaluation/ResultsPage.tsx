@@ -287,13 +287,13 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
                   tabIndex={0}
                 >
                   {isMobile ? (
-                    <div className="w-full mx-auto h-[400px]">
+                    <div className="w-full mx-auto h-[500px]">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={chartData} margin={{
                           top: 30,
                           right: 0,
                           left: 0,
-                          bottom: 110
+                          bottom: 50
                         }}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
