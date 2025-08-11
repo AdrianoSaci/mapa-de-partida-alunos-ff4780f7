@@ -11,15 +11,8 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
   return <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <div className="mb-6 flex justify-center">
-            <img 
-              src="/lovable-uploads/0a9299a8-4ab3-4257-bb32-24e7b6dfbaf0.png"
-              alt="Programa Filho que Fala - Logo" 
-              className="h-20 w-auto object-contain"
-            />
-          </div>
-          <h1 className="text-2xl font-bold text-blue-600 mb-3">MAPA DE PARTIDA</h1>
-          <p className="text-xl text-gray-700 font-semibold">Descubra a Real Idade de Comunicação do seu filho</p>
+          <h1 className="text-3xl font-bold text-blue-600 mb-2">MAPA DE PARTIDA</h1>
+          <p className="text-lg text-gray-600 font-medium">Descubra a Real Idade de Comunicação do seu filho</p>
         </div>
 
         <Card className="mb-6">
