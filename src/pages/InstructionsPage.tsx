@@ -63,6 +63,14 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
                 <p>Todas as informações constantes neste teste seguem a Lei 12.965 de 2014 - Marco Civil da Internet e Lei 13.709 de 2018 - Lei Geral de Proteção de Dados (LGPD).</p>
               </div>
             </div>
+            
+            <div className="flex justify-center mt-6">
+              <img 
+                src="/lovable-uploads/d108afc5-6471-49a0-b12e-27ee262bd431.png" 
+                alt="Programa Filho que Fala Logo" 
+                className="h-20 object-contain"
+              />
+            </div>
           </CardContent>
         </Card>
 
