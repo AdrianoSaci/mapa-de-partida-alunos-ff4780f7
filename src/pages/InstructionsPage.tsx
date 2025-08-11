@@ -2,7 +2,6 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle } from 'lucide-react';
-import logoImage from '@/assets/programa-logo.png';
 interface InstructionsPageProps {
   onContinue: () => void;
 }
@@ -14,7 +13,7 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
         <div className="text-center mb-8">
           <div className="mb-6 flex justify-center">
             <img 
-              src={logoImage}
+              src="/lovable-uploads/0a9299a8-4ab3-4257-bb32-24e7b6dfbaf0.png"
               alt="Programa Filho que Fala - Logo" 
               className="h-20 w-auto object-contain"
             />
