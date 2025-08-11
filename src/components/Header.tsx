@@ -6,7 +6,7 @@ export const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-center items-center h-20">
           <img 
-            src="/logo.png"
+            src="/lovable-uploads/2ee55b29-2182-4bec-84b0-cbf8867a39db.png"
             alt="Programa Filho que Fala - Logo" 
             className="h-16 w-auto object-contain"
           />
