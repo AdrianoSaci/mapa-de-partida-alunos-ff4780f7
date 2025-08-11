@@ -11,6 +11,14 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
   return <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
+          <div className="mb-6">
+            <div className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent mb-2">
+              PROGRAMA FILHO QUE FALA
+            </div>
+            <div className="text-sm text-orange-600 font-medium">
+              com Dra. Camila Koszka
+            </div>
+          </div>
           <h1 className="text-2xl font-bold text-blue-600 mb-3">MAPA DE PARTIDA</h1>
           <p className="text-xl text-gray-700 font-semibold">Descubra a Real Idade de Comunicação do seu filho</p>
         </div>
