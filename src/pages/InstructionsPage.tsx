@@ -25,7 +25,7 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
                 <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold text-gray-800">Leia com atenção</h3>
-                  <p className="text-gray-600">O MAPA DE PARTIDA é uma ferramenta que se baseia nas habilidades que uma criança deve apresentar em cada faixa etária, seguindo os marcos do desenvolvimento e da fala propostos por ampla literatura científica e na Caderneta da Criança, publicada pelo Ministério da Saúde (7ª Edição, de 2024). </p>
+                  <p className="text-gray-600">O MAPA DE PARTIDA é uma ferramenta que se baseia nas habilidades que uma criança deve apresentar em cada faixa etária, seguindo os marcos do desenvolvimento e da fala propostos por ampla literatura científica, no Manual do Inventário Portage Operacionalizado e Check List Denver, em Intervenção Precoce em Crianças com Autismo.</p>
                 </div>
               </div>
 
