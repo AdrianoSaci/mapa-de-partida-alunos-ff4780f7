@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,10 +23,12 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
   initialData 
 }) => {
   const isMobile = useIsMobile();
+  const dateInputRef = useRef<HTMLInputElement>(null);
   const [caregiverName, setCaregiverName] = useState(initialData?.caregiver?.name || '');
   const [caregiverEmail, setCaregiverEmail] = useState(initialData?.caregiver?.email || '');
   const [caregiverWhatsapp, setCaregiverWhatsapp] = useState(initialData?.caregiver?.whatsapp || '');
   const [childName, setChildName] = useState(initialData?.child?.name || '');
+  const [cursorPosition, setCursorPosition] = useState<number>(0);
   
   // Initialize date state based on device type and initial data format
   const initializeDateOfBirth = () => {
@@ -71,46 +73,93 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   };
 
-  // Apply progressive date mask for mobile input
-  const applyProgressiveMask = (value: string) => {
-    const numericValue = value.replace(/\D/g, '');
+  // Format date input with progressive mask - only shows valid numbers
+  const formatDateInput = (value: string) => {
+    // Extract only numbers from input
+    const numbers = value.replace(/\D/g, '');
     
-    if (numericValue.length === 0) return '';
-    if (numericValue.length <= 2) return numericValue + '/MM/AAAA'.slice(numericValue.length);
-    if (numericValue.length <= 4) {
-      const day = numericValue.slice(0, 2);
-      const month = numericValue.slice(2);
-      return `${day}/${month}${'M/AAAA'.slice(month.length)}`;
+    // Validate digits as they're typed
+    if (numbers.length === 0) return '';
+    
+    // Day validation (01-31)
+    if (numbers.length === 1) {
+      const firstDigit = parseInt(numbers[0]);
+      if (firstDigit > 3) return ''; // Day can't start with > 3
+      return numbers;
     }
     
-    const day = numericValue.slice(0, 2);
-    const month = numericValue.slice(2, 4);
-    const year = numericValue.slice(4, 8);
-    return `${day}/${month}/${year}`;
+    if (numbers.length === 2) {
+      const day = parseInt(numbers);
+      if (day === 0 || day > 31) return numbers[0]; // Keep only first digit if invalid
+      return numbers + '/';
+    }
+    
+    // Month validation (01-12)
+    if (numbers.length === 3) {
+      const day = parseInt(numbers.slice(0, 2));
+      const monthFirstDigit = parseInt(numbers[2]);
+      if (day === 0 || day > 31) return numbers.slice(0, 1);
+      if (monthFirstDigit > 1) return numbers.slice(0, 2) + '/'; // Month can't start with > 1
+      return numbers.slice(0, 2) + '/' + numbers[2];
+    }
+    
+    if (numbers.length === 4) {
+      const day = parseInt(numbers.slice(0, 2));
+      const month = parseInt(numbers.slice(2, 4));
+      if (day === 0 || day > 31) return numbers.slice(0, 1);
+      if (month === 0 || month > 12) return numbers.slice(0, 2) + '/' + numbers[2]; // Keep only first month digit
+      return numbers.slice(0, 2) + '/' + numbers.slice(2, 4) + '/';
+    }
+    
+    // Year validation (1900-current year)
+    if (numbers.length >= 5) {
+      const day = parseInt(numbers.slice(0, 2));
+      const month = parseInt(numbers.slice(2, 4));
+      const currentYear = new Date().getFullYear();
+      
+      if (day === 0 || day > 31) return numbers.slice(0, 1);
+      if (month === 0 || month > 12) return numbers.slice(0, 2) + '/' + numbers[2];
+      
+      let year = numbers.slice(4, 8);
+      
+      // Prevent future years as they're typed
+      if (year.length >= 4) {
+        const fullYear = parseInt(year);
+        if (fullYear > currentYear) {
+          year = currentYear.toString();
+        }
+        if (fullYear < 1900) {
+          year = '1900';
+        }
+      }
+      
+      return numbers.slice(0, 2) + '/' + numbers.slice(2, 4) + '/' + year;
+    }
+    
+    return numbers;
   };
 
-  // Robust date validation with real date checks
+  // Validate if date is complete and correct
   const validateDate = (dateStr: string) => {
     if (!dateStr) return false;
     
     let day, month, year;
     
     if (isMobile) {
-      // Validate DD/MM/YYYY format
+      // Must be complete DD/MM/YYYY format
       if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return false;
       [day, month, year] = dateStr.split('/').map(Number);
     } else {
-      // Validate YYYY-MM-DD format
       if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
       [year, month, day] = dateStr.split('-').map(Number);
     }
     
-    // Basic range validation
+    // Validate ranges
     if (month < 1 || month > 12) return false;
     if (day < 1 || day > 31) return false;
     if (year < 1900 || year > new Date().getFullYear()) return false;
     
-    // Create date and validate it exists (handles leap years, month lengths, etc.)
+    // Check if the date actually exists (handles leap years, etc.)
     const date = new Date(year, month - 1, day);
     const isValidDate = date.getDate() === day && 
                        date.getMonth() === month - 1 && 
@@ -118,26 +167,56 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
     
     if (!isValidDate) return false;
     
-    // Additional business logic: don't allow future dates
+    // Don't allow future dates
     const today = new Date();
     return date <= today;
   };
 
-  // Get actual numeric input for progressive mask
-  const getNumericInput = (value: string) => {
-    return value.replace(/\D/g, '');
-  };
-
+  // Handle date input with proper cursor management
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     
     if (isMobile) {
-      const maskedValue = applyProgressiveMask(value);
-      setChildDateOfBirth(maskedValue);
+      const formatted = formatDateInput(value);
+      setChildDateOfBirth(formatted);
+      
+      // Calculate new cursor position
+      const numbersInInput = value.replace(/\D/g, '').length;
+      let newPosition = formatted.length;
+      
+      // Adjust cursor position based on where slashes are added
+      if (numbersInInput === 2 && formatted.endsWith('/')) {
+        newPosition = formatted.length;
+      } else if (numbersInInput === 4 && formatted.endsWith('/')) {
+        newPosition = formatted.length;
+      } else {
+        // Keep cursor at the end of numbers typed
+        const numbersInFormatted = formatted.replace(/\D/g, '').length;
+        if (numbersInFormatted <= 2) {
+          newPosition = numbersInFormatted;
+        } else if (numbersInFormatted <= 4) {
+          newPosition = numbersInFormatted + 1; // +1 for first slash
+        } else {
+          newPosition = numbersInFormatted + 2; // +2 for both slashes
+        }
+      }
+      
+      setCursorPosition(newPosition);
     } else {
       setChildDateOfBirth(value);
     }
   };
+  
+  // Effect to manage cursor position
+  useEffect(() => {
+    if (isMobile && dateInputRef.current) {
+      const input = dateInputRef.current;
+      // Small delay to ensure the value has been updated
+      setTimeout(() => {
+        input.setSelectionRange(cursorPosition, cursorPosition);
+      }, 0);
+    }
+  }, [childDateOfBirth, cursorPosition, isMobile]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -278,12 +357,14 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
                 <div className="space-y-2">
                   <Label htmlFor="childDateOfBirth">Data de Nascimento *</Label>
                   <Input
+                    ref={dateInputRef}
                     id="childDateOfBirth"
                     type={isMobile ? "text" : "date"}
                     value={childDateOfBirth}
                     onChange={handleDateChange}
                     placeholder={isMobile ? "DD/MM/AAAA" : undefined}
                     maxLength={isMobile ? 10 : undefined}
+                    inputMode={isMobile ? "numeric" : undefined}
                     required
                   />
                   {isMobile && (
