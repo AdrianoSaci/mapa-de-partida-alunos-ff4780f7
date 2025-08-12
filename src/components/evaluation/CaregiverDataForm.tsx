@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DatePicker } from '@/components/ui/date-picker';
 import { Caregiver, Child } from '@/types';
 import { toast } from '@/hooks/use-toast';
 
@@ -154,11 +153,12 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
 
                 <div className="space-y-2">
                   <Label htmlFor="childDateOfBirth">Data de Nascimento *</Label>
-                  <DatePicker
+                  <Input
                     id="childDateOfBirth"
+                    type="date"
                     value={childDateOfBirth}
-                    onChange={setChildDateOfBirth}
-                    placeholder="dd/mm/aaaa"
+                    onChange={(e) => setChildDateOfBirth(e.target.value)}
+                    required
                   />
                 </div>
               </div>
