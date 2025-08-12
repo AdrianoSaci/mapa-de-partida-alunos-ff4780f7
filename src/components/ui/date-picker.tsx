@@ -143,7 +143,9 @@ export function DatePicker({
         placeholder="dd/mm/aaaa"
         disabled={disabled}
         className={className}
-        maxLength={10}
+        inputMode="numeric"
+        pattern="[0-9/]*"
+        autoComplete="bday"
       />
     )
   }
