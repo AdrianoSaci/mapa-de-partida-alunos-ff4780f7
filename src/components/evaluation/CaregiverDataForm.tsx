@@ -71,16 +71,25 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   };
 
-  // Apply date mask for mobile input
-  const applyDateMask = (value: string) => {
+  // Apply progressive date mask for mobile input
+  const applyProgressiveMask = (value: string) => {
     const numericValue = value.replace(/\D/g, '');
     
-    if (numericValue.length <= 2) return numericValue;
-    if (numericValue.length <= 4) return `${numericValue.slice(0, 2)}/${numericValue.slice(2)}`;
-    return `${numericValue.slice(0, 2)}/${numericValue.slice(2, 4)}/${numericValue.slice(4, 8)}`;
+    if (numericValue.length === 0) return '';
+    if (numericValue.length <= 2) return numericValue + '/MM/AAAA'.slice(numericValue.length);
+    if (numericValue.length <= 4) {
+      const day = numericValue.slice(0, 2);
+      const month = numericValue.slice(2);
+      return `${day}/${month}${'M/AAAA'.slice(month.length)}`;
+    }
+    
+    const day = numericValue.slice(0, 2);
+    const month = numericValue.slice(2, 4);
+    const year = numericValue.slice(4, 8);
+    return `${day}/${month}/${year}`;
   };
 
-  // Validate date format and value
+  // Robust date validation with real date checks
   const validateDate = (dateStr: string) => {
     if (!dateStr) return false;
     
@@ -96,21 +105,34 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
       [year, month, day] = dateStr.split('-').map(Number);
     }
     
-    // Validate date values
+    // Basic range validation
     if (month < 1 || month > 12) return false;
     if (day < 1 || day > 31) return false;
     if (year < 1900 || year > new Date().getFullYear()) return false;
     
-    // Check if date is valid
+    // Create date and validate it exists (handles leap years, month lengths, etc.)
     const date = new Date(year, month - 1, day);
-    return date.getDate() === day && date.getMonth() === month - 1 && date.getFullYear() === year;
+    const isValidDate = date.getDate() === day && 
+                       date.getMonth() === month - 1 && 
+                       date.getFullYear() === year;
+    
+    if (!isValidDate) return false;
+    
+    // Additional business logic: don't allow future dates
+    const today = new Date();
+    return date <= today;
+  };
+
+  // Get actual numeric input for progressive mask
+  const getNumericInput = (value: string) => {
+    return value.replace(/\D/g, '');
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     
     if (isMobile) {
-      const maskedValue = applyDateMask(value);
+      const maskedValue = applyProgressiveMask(value);
       setChildDateOfBirth(maskedValue);
     } else {
       setChildDateOfBirth(value);
