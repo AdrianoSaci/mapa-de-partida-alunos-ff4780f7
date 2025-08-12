@@ -1,5 +1,5 @@
 import * as React from "react"
-import { format, parse, isValid } from "date-fns"
+import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -30,107 +30,100 @@ export function DatePicker({
   id
 }: DatePickerProps) {
   const isMobile = useIsMobile()
-  const [displayValue, setDisplayValue] = React.useState("")
+  const [mobileDisplayValue, setMobileDisplayValue] = React.useState("")
   const [isOpen, setIsOpen] = React.useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null)
 
-  // Convert yyyy-mm-dd to dd/mm/yyyy for display
+  // Convert yyyy-mm-dd to dd/mm/yyyy for mobile display
   React.useEffect(() => {
-    if (value) {
+    if (isMobile && value) {
       const date = new Date(value)
-      if (isValid(date)) {
-        setDisplayValue(format(date, "dd/MM/yyyy"))
+      if (!isNaN(date.getTime())) {
+        setMobileDisplayValue(format(date, "dd/MM/yyyy"))
       }
-    } else {
-      setDisplayValue("")
+    } else if (isMobile) {
+      setMobileDisplayValue("")
     }
-  }, [value])
+  }, [value, isMobile])
 
-  const formatDateMask = (input: string, cursorPosition: number): { formatted: string; newCursorPosition: number } => {
+  const autoCorrectValue = (num: number, min: number, max: number): number => {
+    if (num < min) return min
+    if (num > max) return max
+    return num
+  }
+
+  const formatDateMask = (input: string): string => {
     // Remove all non-numeric characters
     const numbers = input.replace(/\D/g, "")
     let formatted = ""
-    let newCursorPosition = cursorPosition
 
-    // Apply progressive mask
     if (numbers.length >= 1) {
-      formatted += numbers.substring(0, 2)
+      let day = parseInt(numbers.substring(0, 2)) || 0
+      day = autoCorrectValue(day, 1, 31)
+      formatted += day.toString().padStart(2, '0').substring(0, 2)
+      
       if (numbers.length >= 3) {
-        formatted += "/" + numbers.substring(2, 4)
+        let month = parseInt(numbers.substring(2, 4)) || 0
+        month = autoCorrectValue(month, 1, 12)
+        formatted += "/" + month.toString().padStart(2, '0').substring(0, 2)
+        
         if (numbers.length >= 5) {
-          formatted += "/" + numbers.substring(4, 8)
+          let year = parseInt(numbers.substring(4, 8)) || 0
+          const currentYear = new Date().getFullYear()
+          year = autoCorrectValue(year, 1900, currentYear)
+          formatted += "/" + year.toString().substring(0, 4)
         }
       }
     }
 
-    // Adjust cursor position after formatting
-    const originalNumbers = input.substring(0, cursorPosition).replace(/\D/g, "").length
-    let newPosition = 0
-    let numberCount = 0
-    
-    for (let i = 0; i < formatted.length && numberCount < originalNumbers; i++) {
-      if (/\d/.test(formatted[i])) {
-        numberCount++
-      }
-      newPosition = i + 1
-    }
-
-    return { formatted, newCursorPosition: newPosition }
+    return formatted
   }
 
-  const validateDate = (day: number, month: number, year: number): boolean => {
-    const currentYear = new Date().getFullYear()
-    
-    // Basic range validation
-    if (year < 1900 || year > currentYear) return false
-    if (month < 1 || month > 12) return false
-    if (day < 1 || day > 31) return false
-
-    // Month-specific day validation
-    const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    
-    // Check for leap year
-    const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)
-    if (isLeapYear) daysInMonth[1] = 29
-
-    return day <= daysInMonth[month - 1]
-  }
-
-  const convertToISODate = (dateStr: string): string => {
+  const validateAndConvertToISO = (dateStr: string): string => {
     const numbers = dateStr.replace(/\D/g, "")
     if (numbers.length === 8) {
-      const day = parseInt(numbers.substring(0, 2))
-      const month = parseInt(numbers.substring(2, 4))
-      const year = parseInt(numbers.substring(4, 8))
+      let day = parseInt(numbers.substring(0, 2))
+      let month = parseInt(numbers.substring(2, 4))
+      let year = parseInt(numbers.substring(4, 8))
 
-      if (validateDate(day, month, year)) {
-        return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
-      }
+      const currentYear = new Date().getFullYear()
+      
+      // Auto-correct values
+      day = autoCorrectValue(day, 1, 31)
+      month = autoCorrectValue(month, 1, 12)
+      year = autoCorrectValue(year, 1900, currentYear)
+
+      // Month-specific day validation
+      const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+      const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)
+      if (isLeapYear) daysInMonth[1] = 29
+      
+      day = autoCorrectValue(day, 1, daysInMonth[month - 1])
+
+      return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
     }
     return ""
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMobileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value
-    const cursorPosition = e.target.selectionStart || 0
-    
-    const { formatted, newCursorPosition } = formatDateMask(input, cursorPosition)
+    const formatted = formatDateMask(input)
     
     // Limit to 10 characters (dd/mm/yyyy)
     if (formatted.length <= 10) {
-      setDisplayValue(formatted)
+      setMobileDisplayValue(formatted)
       
-      // Convert to ISO format and validate
-      const isoDate = convertToISODate(formatted)
-      onChange?.(isoDate)
-
-      // Restore cursor position
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.setSelectionRange(newCursorPosition, newCursorPosition)
-        }
-      }, 0)
+      // Convert to ISO format
+      const isoDate = validateAndConvertToISO(formatted)
+      if (isoDate) {
+        onChange?.(isoDate)
+      }
     }
+  }
+
+  const handleDesktopInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    onChange?.(value)
   }
 
   const handleCalendarSelect = (date: Date | undefined) => {
@@ -143,6 +136,25 @@ export function DatePicker({
 
   const selectedDate = value ? new Date(value) : undefined
 
+  // Desktop: Use native HTML5 date input (original behavior)
+  if (!isMobile) {
+    return (
+      <div className="relative">
+        <Input
+          id={id}
+          type="date"
+          value={value}
+          onChange={handleDesktopInputChange}
+          disabled={disabled}
+          className={className}
+          min="1900-01-01"
+          max={format(new Date(), "yyyy-MM-dd")}
+        />
+      </div>
+    )
+  }
+
+  // Mobile: Custom input with mask and calendar
   return (
     <div className="relative">
       <div className="flex">
@@ -150,8 +162,8 @@ export function DatePicker({
           ref={inputRef}
           id={id}
           type="text"
-          value={displayValue}
-          onChange={handleInputChange}
+          value={mobileDisplayValue}
+          onChange={handleMobileInputChange}
           placeholder={placeholder}
           disabled={disabled}
           className={cn("pr-10", className)}
