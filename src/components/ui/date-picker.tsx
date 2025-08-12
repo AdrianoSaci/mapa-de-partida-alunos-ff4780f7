@@ -21,19 +21,79 @@ export function DatePicker({
   id
 }: DatePickerProps) {
   const isMobile = useIsMobile()
-  const [displayValue, setDisplayValue] = React.useState("")
+  const [maskValue, setMaskValue] = React.useState("dd/mm/aaaa")
 
   // Converte valor ISO para formato brasileiro para exibição
   React.useEffect(() => {
     if (value && value.includes('-')) {
       const [year, month, day] = value.split('-')
-      setDisplayValue(`${day}/${month}/${year}`)
-    } else if (value && !value.includes('-')) {
-      setDisplayValue(value)
+      setMaskValue(`${day}/${month}/${year}`)
     } else {
-      setDisplayValue("")
+      setMaskValue("dd/mm/aaaa")
     }
   }, [value])
+
+  const formatWithMask = (input: string, currentMask: string) => {
+    // Remove tudo que não é dígito
+    const digits = input.replace(/\D/g, '')
+    let newMask = "dd/mm/aaaa"
+    let digitIndex = 0
+
+    for (let i = 0; i < newMask.length && digitIndex < digits.length; i++) {
+      if (newMask[i] === 'd' || newMask[i] === 'm' || newMask[i] === 'a') {
+        newMask = newMask.substring(0, i) + digits[digitIndex] + newMask.substring(i + 1)
+        digitIndex++
+      }
+    }
+
+    return newMask
+  }
+
+  const autoCorrectValues = (day: string, month: string, year: string) => {
+    // Auto-correção para dia
+    if (day.length === 2) {
+      const dayNum = parseInt(day, 10)
+      if (dayNum > 31) day = "31"
+      if (dayNum < 1) day = "01"
+    }
+
+    // Auto-correção para mês
+    if (month.length === 2) {
+      const monthNum = parseInt(month, 10)
+      if (monthNum > 12) month = "12"
+      if (monthNum < 1) month = "01"
+    }
+
+    // Auto-correção para ano (não pode ser futuro)
+    if (year.length === 4) {
+      const yearNum = parseInt(year, 10)
+      const currentYear = new Date().getFullYear()
+      if (yearNum > currentYear) year = currentYear.toString()
+      if (yearNum < 1900) year = "1900"
+    }
+
+    return { day, month, year }
+  }
+
+  const isValidDate = (day: string, month: string, year: string) => {
+    if (day.length !== 2 || month.length !== 2 || year.length !== 4) return false
+    
+    const dayNum = parseInt(day, 10)
+    const monthNum = parseInt(month, 10)
+    const yearNum = parseInt(year, 10)
+
+    // Criar data e verificar se é válida
+    const date = new Date(yearNum, monthNum - 1, dayNum)
+    const isRealDate = date.getDate() === dayNum && 
+                      date.getMonth() === monthNum - 1 && 
+                      date.getFullYear() === yearNum
+
+    // Verificar se não é data futura
+    const today = new Date()
+    const isNotFuture = date <= today
+
+    return isRealDate && isNotFuture
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value
@@ -44,30 +104,32 @@ export function DatePicker({
       return
     }
 
-    // Mobile: formatação manual dd/mm/aaaa
-    let formattedValue = inputValue.replace(/\D/g, '') // Remove tudo que não é dígito
+    // Mobile: máscara inteligente
+    const newMask = formatWithMask(inputValue, maskValue)
     
-    if (formattedValue.length >= 2) {
-      formattedValue = formattedValue.slice(0, 2) + '/' + formattedValue.slice(2)
-    }
-    if (formattedValue.length >= 5) {
-      formattedValue = formattedValue.slice(0, 5) + '/' + formattedValue.slice(5, 9)
-    }
+    // Extrair partes da data
+    const parts = newMask.split('/')
+    if (parts.length === 3) {
+      const [dayPart, monthPart, yearPart] = parts
+      
+      // Auto-correção em tempo real
+      const corrected = autoCorrectValues(dayPart, monthPart, yearPart)
+      const correctedMask = `${corrected.day}/${corrected.month}/${corrected.year}`
+      
+      setMaskValue(correctedMask)
 
-    setDisplayValue(formattedValue)
-
-    // Validação e conversão para formato ISO quando completo
-    if (formattedValue.length === 10) {
-      const [day, month, year] = formattedValue.split('/')
-      const dayNum = parseInt(day, 10)
-      const monthNum = parseInt(month, 10)
-      const yearNum = parseInt(year, 10)
-
-      // Validação básica
-      if (dayNum >= 1 && dayNum <= 31 && monthNum >= 1 && monthNum <= 12 && yearNum >= 1900) {
-        const isoDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-        onChange?.(isoDate)
+      // Validação final e conversão para ISO
+      if (corrected.day.length === 2 && corrected.month.length === 2 && corrected.year.length === 4) {
+        if (isValidDate(corrected.day, corrected.month, corrected.year)) {
+          const isoDate = `${corrected.year}-${corrected.month.padStart(2, '0')}-${corrected.day.padStart(2, '0')}`
+          onChange?.(isoDate)
+        } else {
+          // Data inválida - não chama onChange
+          onChange?.("")
+        }
       }
+    } else {
+      setMaskValue(newMask)
     }
   }
 
@@ -76,7 +138,7 @@ export function DatePicker({
       <Input
         id={id}
         type="text"
-        value={displayValue}
+        value={maskValue}
         onChange={handleInputChange}
         placeholder="dd/mm/aaaa"
         disabled={disabled}
