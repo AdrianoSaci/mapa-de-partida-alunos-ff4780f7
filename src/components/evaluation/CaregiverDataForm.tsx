@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Caregiver, Child } from '@/types';
 import { toast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface CaregiverDataFormProps {
   onNext: (caregiver: Caregiver, child: Child) => void;
@@ -21,11 +22,82 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
   onBack, 
   initialData 
 }) => {
+  const isMobile = useIsMobile();
   const [caregiverName, setCaregiverName] = useState(initialData?.caregiver?.name || '');
   const [caregiverEmail, setCaregiverEmail] = useState(initialData?.caregiver?.email || '');
   const [caregiverWhatsapp, setCaregiverWhatsapp] = useState(initialData?.caregiver?.whatsapp || '');
   const [childName, setChildName] = useState(initialData?.child?.name || '');
   const [childDateOfBirth, setChildDateOfBirth] = useState(initialData?.child?.dateOfBirth || '');
+
+  // Format date for mobile display (DD/MM/YYYY)
+  const formatDateForDisplay = (dateStr: string) => {
+    if (!dateStr || !isMobile) return dateStr;
+    
+    // If it's already in DD/MM/YYYY format, return as is
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return dateStr;
+    
+    // Convert from YYYY-MM-DD to DD/MM/YYYY
+    const [year, month, day] = dateStr.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
+  // Convert date to ISO format (YYYY-MM-DD) for storage
+  const convertToISODate = (dateStr: string) => {
+    if (!dateStr) return '';
+    
+    // If it's already in YYYY-MM-DD format, return as is
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+    
+    // Convert from DD/MM/YYYY to YYYY-MM-DD
+    const [day, month, year] = dateStr.split('/');
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  };
+
+  // Apply date mask for mobile input
+  const applyDateMask = (value: string) => {
+    const numericValue = value.replace(/\D/g, '');
+    
+    if (numericValue.length <= 2) return numericValue;
+    if (numericValue.length <= 4) return `${numericValue.slice(0, 2)}/${numericValue.slice(2)}`;
+    return `${numericValue.slice(0, 2)}/${numericValue.slice(2, 4)}/${numericValue.slice(4, 8)}`;
+  };
+
+  // Validate date format and value
+  const validateDate = (dateStr: string) => {
+    if (!dateStr) return false;
+    
+    let day, month, year;
+    
+    if (isMobile) {
+      // Validate DD/MM/YYYY format
+      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return false;
+      [day, month, year] = dateStr.split('/').map(Number);
+    } else {
+      // Validate YYYY-MM-DD format
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
+      [year, month, day] = dateStr.split('-').map(Number);
+    }
+    
+    // Validate date values
+    if (month < 1 || month > 12) return false;
+    if (day < 1 || day > 31) return false;
+    if (year < 1900 || year > new Date().getFullYear()) return false;
+    
+    // Check if date is valid
+    const date = new Date(year, month - 1, day);
+    return date.getDate() === day && date.getMonth() === month - 1 && date.getFullYear() === year;
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    if (isMobile) {
+      const maskedValue = applyDateMask(value);
+      setChildDateOfBirth(maskedValue);
+    } else {
+      setChildDateOfBirth(value);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,9 +122,21 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
       return;
     }
 
-    // Validate date of birth is not in the future
-    const birthDate = new Date(childDateOfBirth);
+    // Validate date format
+    if (!validateDate(childDateOfBirth)) {
+      toast({
+        title: "Erro",
+        description: isMobile ? "Por favor, digite uma data válida no formato DD/MM/AAAA." : "Por favor, selecione uma data válida.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Convert to ISO format for validation and storage
+    const isoDate = isMobile ? convertToISODate(childDateOfBirth) : childDateOfBirth;
+    const birthDate = new Date(isoDate);
     const today = new Date();
+    
     if (birthDate > today) {
       toast({
         title: "Erro",
@@ -70,7 +154,7 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
 
     const child: Child = {
       name: childName,
-      dateOfBirth: childDateOfBirth
+      dateOfBirth: isMobile ? convertToISODate(childDateOfBirth) : childDateOfBirth
     };
 
     onNext(caregiver, child);
@@ -155,11 +239,18 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
                   <Label htmlFor="childDateOfBirth">Data de Nascimento *</Label>
                   <Input
                     id="childDateOfBirth"
-                    type="date"
-                    value={childDateOfBirth}
-                    onChange={(e) => setChildDateOfBirth(e.target.value)}
+                    type={isMobile ? "text" : "date"}
+                    value={isMobile ? formatDateForDisplay(childDateOfBirth) : childDateOfBirth}
+                    onChange={handleDateChange}
+                    placeholder={isMobile ? "DD/MM/AAAA" : undefined}
+                    maxLength={isMobile ? 10 : undefined}
                     required
                   />
+                  {isMobile && (
+                    <p className="text-sm text-muted-foreground">
+                      Digite a data no formato DD/MM/AAAA
+                    </p>
+                  )}
                 </div>
               </div>
 
