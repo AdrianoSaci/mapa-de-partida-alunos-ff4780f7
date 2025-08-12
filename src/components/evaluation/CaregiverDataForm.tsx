@@ -27,18 +27,36 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
   const [caregiverEmail, setCaregiverEmail] = useState(initialData?.caregiver?.email || '');
   const [caregiverWhatsapp, setCaregiverWhatsapp] = useState(initialData?.caregiver?.whatsapp || '');
   const [childName, setChildName] = useState(initialData?.child?.name || '');
-  const [childDateOfBirth, setChildDateOfBirth] = useState(initialData?.child?.dateOfBirth || '');
+  
+  // Initialize date state based on device type and initial data format
+  const initializeDateOfBirth = () => {
+    const initialDate = initialData?.child?.dateOfBirth || '';
+    if (!initialDate) return '';
+    
+    // If mobile and date is in YYYY-MM-DD format, convert to DD/MM/YYYY
+    if (isMobile && /^\d{4}-\d{2}-\d{2}$/.test(initialDate)) {
+      const [year, month, day] = initialDate.split('-');
+      return `${day}/${month}/${year}`;
+    }
+    
+    return initialDate;
+  };
+  
+  const [childDateOfBirth, setChildDateOfBirth] = useState(initializeDateOfBirth());
 
-  // Format date for mobile display (DD/MM/YYYY)
+  // Format date for mobile display (DD/MM/YYYY) - only for initial data conversion
   const formatDateForDisplay = (dateStr: string) => {
-    if (!dateStr || !isMobile) return dateStr;
+    if (!dateStr) return dateStr;
     
-    // If it's already in DD/MM/YYYY format, return as is
-    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return dateStr;
+    // Only convert if it's a complete YYYY-MM-DD date and all parts are defined
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      const [year, month, day] = dateStr.split('-');
+      if (year && month && day) {
+        return `${day}/${month}/${year}`;
+      }
+    }
     
-    // Convert from YYYY-MM-DD to DD/MM/YYYY
-    const [year, month, day] = dateStr.split('-');
-    return `${day}/${month}/${year}`;
+    return dateStr;
   };
 
   // Convert date to ISO format (YYYY-MM-DD) for storage
@@ -240,7 +258,7 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
                   <Input
                     id="childDateOfBirth"
                     type={isMobile ? "text" : "date"}
-                    value={isMobile ? formatDateForDisplay(childDateOfBirth) : childDateOfBirth}
+                    value={childDateOfBirth}
                     onChange={handleDateChange}
                     placeholder={isMobile ? "DD/MM/AAAA" : undefined}
                     maxLength={isMobile ? 10 : undefined}
