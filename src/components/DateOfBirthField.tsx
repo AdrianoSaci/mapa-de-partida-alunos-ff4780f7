@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Props = {
   label?: string;
@@ -39,6 +40,7 @@ export default function DateOfBirthField({
   disabled,
   error,
 }: Props) {
+  const isMobile = useIsMobile();
   const init = parseISO(value);
   const [dd, setDD] = useState(init.dd);
   const [mm, setMM] = useState(init.mm);
@@ -102,8 +104,8 @@ export default function DateOfBirthField({
           onKeyDown={(e) => {
             // atalhos
             if (e.key === "/" || e.key === ".") { e.preventDefault(); mmRef.current?.focus(); return; }
-            // sobrescrever inteligente: apenas quando o usuário não está digitando ativamente
-            if (/^\d$/.test(e.key) && !isTyping) {
+            // sobrescrever inteligente: apenas no desktop quando não está digitando
+            if (!isMobile && /^\d$/.test(e.key) && !isTyping) {
               const el = e.currentTarget;
               const hasSelection = el.selectionStart !== el.selectionEnd;
               if (dd.length === 2 && !hasSelection) {
@@ -153,8 +155,8 @@ export default function DateOfBirthField({
           onKeyDown={(e) => {
             if (e.key === "/" || e.key === ".") { e.preventDefault(); yyyyRef.current?.focus(); return; }
             if (e.key === "Backspace" && mm === "") { e.preventDefault(); ddRef.current?.focus(); return; }
-            // sobrescrever inteligente: apenas quando o usuário não está digitando ativamente
-            if (/^\d$/.test(e.key) && !isTyping) {
+            // sobrescrever inteligente: apenas no desktop quando não está digitando
+            if (!isMobile && /^\d$/.test(e.key) && !isTyping) {
               const el = e.currentTarget;
               const hasSelection = el.selectionStart !== el.selectionEnd;
               if (mm.length === 2 && !hasSelection) {
