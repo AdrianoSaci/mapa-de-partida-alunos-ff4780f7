@@ -86,15 +86,20 @@ export default function DateOfBirthField({
           inputMode="numeric"
           pattern="\\d*"
           placeholder="DD"
-           className="w-14 rounded-xl border px-3 py-2 text-base border-input bg-background"
+          className="w-14 rounded-xl border px-3 py-2 text-base border-input bg-background"
           autoComplete="bday-day"
+          maxLength={2}
           value={dd}
-          onChange={(e) => {
-            const v = onlyDigits(e.target.value, 2);
-            setDD(v);
-            if (v.length === 2) mmRef.current?.focus();
+          onChange={(e) => setDD(e.target.value.replace(/\D+/g, "").slice(0, 2))}
+          onKeyDown={(e) => {
+            if (e.key === "/" || e.key === ".") { e.preventDefault(); mmRef.current?.focus(); }
           }}
-          onBlur={() => dd && setDD(String(clamp(parseInt(dd,10)||0,1,31)).padStart(2,"0"))}
+          onBlur={() => {
+            if (!dd) return;
+            const n = Math.max(1, Math.min(parseInt(dd, 10) || 0, 31));
+            const padded = String(n).padStart(2, "0");
+            if (padded !== dd) setDD(padded);
+          }}
           disabled={disabled}
           aria-label="Dia"
         />
@@ -107,13 +112,19 @@ export default function DateOfBirthField({
           placeholder="MM"
           className="w-14 rounded-xl border px-3 py-2 text-base border-input bg-background"
           autoComplete="bday-month"
+          maxLength={2}
           value={mm}
-          onChange={(e) => {
-            const v = onlyDigits(e.target.value, 2);
-            setMM(v);
-            if (v.length === 2) yyyyRef.current?.focus();
+          onChange={(e) => setMM(e.target.value.replace(/\D+/g, "").slice(0, 2))}
+          onKeyDown={(e) => {
+            if (e.key === "/" || e.key === ".") { e.preventDefault(); yyyyRef.current?.focus(); }
+            if (e.key === "Backspace" && mm === "") { e.preventDefault(); ddRef.current?.focus(); }
           }}
-          onBlur={() => mm && setMM(String(clamp(parseInt(mm,10)||0,1,12)).padStart(2,"0"))}
+          onBlur={() => {
+            if (!mm) return;
+            const n = Math.max(1, Math.min(parseInt(mm, 10) || 0, 12));
+            const padded = String(n).padStart(2, "0");
+            if (padded !== mm) setMM(padded);
+          }}
           disabled={disabled}
           aria-label="Mês"
         />
@@ -126,14 +137,19 @@ export default function DateOfBirthField({
           placeholder="AAAA"
           className="w-20 rounded-xl border px-3 py-2 text-base border-input bg-background"
           autoComplete="bday-year"
+          maxLength={4}
           value={yyyy}
-          onChange={(e) => setYYYY(onlyDigits(e.target.value, 4))}
+          onChange={(e) => setYYYY(e.target.value.replace(/\D+/g, "").slice(0, 4))}
+          onKeyDown={(e) => {
+            if (e.key === "Backspace" && yyyy === "") { e.preventDefault(); mmRef.current?.focus(); }
+          }}
           onBlur={() => {
             if (!yyyy) return;
-            let y = parseInt(yyyy,10) || maxYear;
+            let y = parseInt(yyyy, 10) || maxYear;
             if (minYear) y = Math.max(y, minYear);
             y = Math.min(y, maxYear);
-            setYYYY(String(y));
+            const fixed = String(y);
+            if (fixed !== yyyy) setYYYY(fixed);
           }}
           disabled={disabled}
           aria-label="Ano"
