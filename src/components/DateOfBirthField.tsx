@@ -93,7 +93,6 @@ export default function DateOfBirthField({
           placeholder="DD"
           className="w-14 rounded-xl border px-3 py-2 text-base border-input bg-background"
           autoComplete="bday-day"
-          maxLength={2}
           value={dd}
           onFocus={(e) => {
             requestAnimationFrame(() => {
@@ -101,26 +100,37 @@ export default function DateOfBirthField({
             });
           }}
           onBeforeInput={(e: React.FormEvent<HTMLInputElement> & { nativeEvent: InputEvent }) => {
-            // Sobrescrever inteligente: se já tem 2 dígitos e não há seleção, iniciar novo valor com o dígito inserido
             const el = e.currentTarget;
             const data = (e.nativeEvent && (e.nativeEvent as any).data) || "";
             const isDigit = /^\d$/.test(data);
             const hasSelection = el.selectionStart !== el.selectionEnd;
             if (isDigit && dd.length === 2 && !hasSelection) {
-              e.preventDefault(); // impede inserir um 3º char
-              setDD(data);        // começa novo par com o dígito atual
+              e.preventDefault();
+              setDD(data);
               requestAnimationFrame(() => {
                 try { el.setSelectionRange(1, 1); } catch {}
               });
             }
           }}
           onKeyDown={(e) => {
-            // atalhos de navegação
             if (e.key === "/" || e.key === ".") { e.preventDefault(); mmRef.current?.focus(); }
           }}
           onChange={(e) => {
-            const v = e.target.value.replace(/\D+/g, "").slice(0, 2);
-            setDD(v);
+            const el = e.currentTarget;
+            let raw = e.target.value.replace(/\D+/g, "");
+
+            if (raw.length > 2) {
+              const noSelection = el.selectionStart === el.selectionEnd;
+              const caretAtEnd = el.selectionStart === (el.value?.length ?? 0);
+              if (dd.length === 2 && noSelection && caretAtEnd) {
+                raw = raw.slice(-1);
+              } else {
+                raw = raw.slice(-2);
+              }
+            }
+
+            raw = raw.slice(0, 2);
+            setDD(raw);
           }}
           onBlur={() => {
             if (!dd) return;
@@ -139,7 +149,6 @@ export default function DateOfBirthField({
           placeholder="MM"
           className="w-14 rounded-xl border px-3 py-2 text-base border-input bg-background"
           autoComplete="bday-month"
-          maxLength={2}
           value={mm}
           onFocus={(e) => {
             requestAnimationFrame(() => {
@@ -164,8 +173,21 @@ export default function DateOfBirthField({
             if (e.key === "Backspace" && mm === "") { e.preventDefault(); ddRef.current?.focus(); }
           }}
           onChange={(e) => {
-            const v = e.target.value.replace(/\D+/g, "").slice(0, 2);
-            setMM(v);
+            const el = e.currentTarget;
+            let raw = e.target.value.replace(/\D+/g, "");
+
+            if (raw.length > 2) {
+              const noSelection = el.selectionStart === el.selectionEnd;
+              const caretAtEnd = el.selectionStart === (el.value?.length ?? 0);
+              if (mm.length === 2 && noSelection && caretAtEnd) {
+                raw = raw.slice(-1);
+              } else {
+                raw = raw.slice(-2);
+              }
+            }
+
+            raw = raw.slice(0, 2);
+            setMM(raw);
           }}
           onBlur={() => {
             if (!mm) return;
