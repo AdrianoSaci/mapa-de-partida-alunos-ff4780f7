@@ -46,6 +46,7 @@ export default function DateOfBirthField({
   const [mm, setMM] = useState(init.mm);
   const [yyyy, setYYYY] = useState(init.yyyy);
   const [isTyping, setIsTyping] = useState(false);
+  const [futureError, setFutureError] = useState(false);
 
   const ddValRef = useRef(dd);
   const mmValRef = useRef(mm);
@@ -64,34 +65,51 @@ export default function DateOfBirthField({
     const monthLen = mm?.length ?? 0;
     const yearLen = yyyy?.length ?? 0;
 
-    // Só normaliza/emite ISO quando DD e MM estiverem COMPLETOS (2 dígitos) e AAAA tiver 4 dígitos.
-    if (dayLen === 2 && monthLen === 2 && yearLen === 4) {
-      let _dd = parseInt(dd, 10);
-      let _mm = parseInt(mm, 10);
-      let _yy = parseInt(yyyy, 10);
-
-      if (minYear) _yy = Math.max(_yy, minYear);
-      _yy = Math.min(_yy, maxYear);
-
-      _mm = clamp(_mm, 1, 12);
-      const maxDay = daysInMonth(_mm, _yy);
-      _dd = clamp(_dd, 1, maxDay);
-
-      const ddP = String(_dd).padStart(2, "0");
-      const mmP = String(_mm).padStart(2, "0");
-      const yyP = String(_yy);
-
-      // Atualiza o estado SOMENTE se precisar corrigir algo (ex.: 31/04 -> 30/04, mês >12 -> 12, ano fora do range)
-      if (ddP !== dd) setDD(ddP);
-      if (mmP !== mm) setMM(mmP);
-      if (yyP !== yyyy) setYYYY(yyP);
-
-      const iso = toISO(_dd, _mm, _yy);
-      onChange?.(iso);
-    } else {
-      // Incompleto enquanto digita: não emite ISO
+    // Enquanto incompleto, não valida nem emite
+    if (!(dayLen === 2 && monthLen === 2 && yearLen === 4)) {
+      setFutureError(false);
       onChange?.(null);
+      return;
     }
+
+    // Parse seguro
+    let _dd = parseInt(dd, 10);
+    let _mm = parseInt(mm, 10);
+    let _yy = parseInt(yyyy, 10);
+
+    // Limites de ano
+    if (minYear) _yy = Math.max(_yy, minYear);
+    _yy = Math.min(_yy, maxYear);
+
+    // Normalização de mês/dia
+    _mm = clamp(_mm, 1, 12);
+    const maxDay = daysInMonth(_mm, _yy);
+    _dd = clamp(_dd, 1, maxDay);
+
+    // Datas locais (zera horário para evitar fuso)
+    const selected = new Date(_yy, _mm - 1, _dd); selected.setHours(0,0,0,0);
+    const today = new Date(); today.setHours(0,0,0,0);
+
+    // Bloqueio de data futura
+    if (selected.getTime() > today.getTime()) {
+      setFutureError(true);
+      onChange?.(null); // impede submit; schema tratará como inválido/obrigatório
+      return;
+    } else {
+      setFutureError(false);
+    }
+
+    // Atualiza UI só se precisou corrigir dd/mm/aaaa
+    const ddP = String(_dd).padStart(2, "0");
+    const mmP = String(_mm).padStart(2, "0");
+    const yyP = String(_yy);
+    if (ddP !== dd) setDD(ddP);
+    if (mmP !== mm) setMM(mmP);
+    if (yyP !== yyyy) setYYYY(yyP);
+
+    // Emite ISO válido
+    const iso = toISO(_dd, _mm, _yy);
+    onChange?.(iso);
   }, [dd, mm, yyyy, minYear, maxYear, onChange]);
 
   const onlyDigits = (s: string, maxLen: number) => s.replace(/\D+/g, "").slice(0, maxLen);
@@ -348,8 +366,10 @@ export default function DateOfBirthField({
           aria-label="Ano"
         />
       </div>
-      {error ? (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
+      {(error || futureError) ? (
+        <p className="mt-1 text-sm text-red-600">
+          {error ?? "Data no futuro não é permitida"}
+        </p>
       ) : (
         <p className="mt-1 text-xs text-gray-500">Formato: dd/mm/aaaa</p>
       )}
