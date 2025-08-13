@@ -57,31 +57,39 @@ export default function DateOfBirthField({
   const yyyyRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // Não formatar durante digitação ativa
-    if (isTyping) return;
+    const dayLen = dd?.length ?? 0;
+    const monthLen = mm?.length ?? 0;
+    const yearLen = yyyy?.length ?? 0;
 
-    const _d = parseInt(dd || "0", 10);
-    const _m = parseInt(mm || "0", 10);
-    const _y = parseInt(yyyy || "0", 10);
+    // Só normaliza/emite ISO quando DD e MM estiverem COMPLETOS (2 dígitos) e AAAA tiver 4 dígitos.
+    if (dayLen === 2 && monthLen === 2 && yearLen === 4) {
+      let _dd = parseInt(dd, 10);
+      let _mm = parseInt(mm, 10);
+      let _yy = parseInt(yyyy, 10);
 
-    if (_d && _m && String(yyyy).length === 4) {
-      let year = _y;
-      if (minYear) year = Math.max(year, minYear);
-      year = Math.min(year, maxYear);
+      if (minYear) _yy = Math.max(_yy, minYear);
+      _yy = Math.min(_yy, maxYear);
 
-      const month = clamp(_m, 1, 12);
-      const maxDay = daysInMonth(month, year);
-      const day = clamp(_d, 1, maxDay);
+      _mm = clamp(_mm, 1, 12);
+      const maxDay = daysInMonth(_mm, _yy);
+      _dd = clamp(_dd, 1, maxDay);
 
-      if (String(day).padStart(2, "0") !== dd) setDD(String(day).padStart(2, "0"));
-      if (String(month).padStart(2, "0") !== mm) setMM(String(month).padStart(2, "0"));
-      if (String(year) !== yyyy) setYYYY(String(year));
+      const ddP = String(_dd).padStart(2, "0");
+      const mmP = String(_mm).padStart(2, "0");
+      const yyP = String(_yy);
 
-      onChange?.(toISO(day, month, year));
+      // Atualiza o estado SOMENTE se precisar corrigir algo (ex.: 31/04 -> 30/04, mês >12 -> 12, ano fora do range)
+      if (ddP !== dd) setDD(ddP);
+      if (mmP !== mm) setMM(mmP);
+      if (yyP !== yyyy) setYYYY(yyP);
+
+      const iso = toISO(_dd, _mm, _yy);
+      onChange?.(iso);
     } else {
+      // Incompleto enquanto digita: não emite ISO
       onChange?.(null);
     }
-  }, [dd, mm, yyyy, minYear, maxYear, onChange, isTyping]);
+  }, [dd, mm, yyyy, minYear, maxYear, onChange]);
 
   const onlyDigits = (s: string, maxLen: number) => s.replace(/\D+/g, "").slice(0, maxLen);
 
