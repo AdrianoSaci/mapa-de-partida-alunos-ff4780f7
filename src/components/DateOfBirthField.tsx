@@ -86,7 +86,7 @@ export default function DateOfBirthField({
           inputMode="numeric"
           pattern="\\d*"
           placeholder="DD"
-          className="w-14 rounded-xl border px-3 py-2 text-base"
+           className="w-14 rounded-xl border px-3 py-2 text-base border-input bg-background"
           autoComplete="bday-day"
           value={dd}
           onChange={(e) => {
@@ -105,7 +105,7 @@ export default function DateOfBirthField({
           inputMode="numeric"
           pattern="\\d*"
           placeholder="MM"
-          className="w-14 rounded-xl border px-3 py-2 text-base"
+          className="w-14 rounded-xl border px-3 py-2 text-base border-input bg-background"
           autoComplete="bday-month"
           value={mm}
           onChange={(e) => {
@@ -124,7 +124,7 @@ export default function DateOfBirthField({
           inputMode="numeric"
           pattern="\\d*"
           placeholder="AAAA"
-          className="w-20 rounded-xl border px-3 py-2 text-base"
+          className="w-20 rounded-xl border px-3 py-2 text-base border-input bg-background"
           autoComplete="bday-year"
           value={yyyy}
           onChange={(e) => setYYYY(onlyDigits(e.target.value, 4))}
