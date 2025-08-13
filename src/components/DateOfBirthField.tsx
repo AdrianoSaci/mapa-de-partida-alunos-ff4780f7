@@ -101,19 +101,19 @@ export default function DateOfBirthField({
           }}
           onKeyDown={(e) => {
             // atalhos
-           if (e.key === "/" || e.key === ".") { e.preventDefault(); mmRef.current?.focus(); return; }
-            // sobrescrever inteligente: se já tem 2 dígitos e não há seleção, comece novo valor
-            if (/^\d$/.test(e.key)) {
+            if (e.key === "/" || e.key === ".") { e.preventDefault(); mmRef.current?.focus(); return; }
+            // sobrescrever inteligente: apenas quando o usuário não está digitando ativamente
+            if (/^\d$/.test(e.key) && !isTyping) {
               const el = e.currentTarget;
               const hasSelection = el.selectionStart !== el.selectionEnd;
               if (dd.length === 2 && !hasSelection) {
                 e.preventDefault();
-                // começa novo par com o dígito pressionado
+                setIsTyping(true);
                 setDD(e.key);
-                // posiciona o cursor ao final
                 requestAnimationFrame(() => {
                   try { el.setSelectionRange(1, 1); } catch {}
                 });
+                setTimeout(() => setIsTyping(false), 100);
                 return;
               }
             }
@@ -153,15 +153,18 @@ export default function DateOfBirthField({
           onKeyDown={(e) => {
             if (e.key === "/" || e.key === ".") { e.preventDefault(); yyyyRef.current?.focus(); return; }
             if (e.key === "Backspace" && mm === "") { e.preventDefault(); ddRef.current?.focus(); return; }
-            if (/^\d$/.test(e.key)) {
+            // sobrescrever inteligente: apenas quando o usuário não está digitando ativamente
+            if (/^\d$/.test(e.key) && !isTyping) {
               const el = e.currentTarget;
               const hasSelection = el.selectionStart !== el.selectionEnd;
               if (mm.length === 2 && !hasSelection) {
                 e.preventDefault();
+                setIsTyping(true);
                 setMM(e.key);
                 requestAnimationFrame(() => {
                   try { el.setSelectionRange(1, 1); } catch {}
                 });
+                setTimeout(() => setIsTyping(false), 100);
                 return;
               }
             }
