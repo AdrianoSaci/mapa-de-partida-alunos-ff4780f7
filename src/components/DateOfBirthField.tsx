@@ -84,7 +84,6 @@ export default function DateOfBirthField({
           ref={ddRef}
           type="text"
           inputMode="numeric"
-          pattern="\\d*"
           placeholder="DD"
           className="w-14 rounded-xl border px-3 py-2 text-base border-input bg-background"
           autoComplete="bday-day"
@@ -97,8 +96,8 @@ export default function DateOfBirthField({
           onBlur={() => {
             if (!dd) return;
             const n = Math.max(1, Math.min(parseInt(dd, 10) || 0, 31));
-            const padded = String(n).padStart(2, "0");
-            if (padded !== dd) setDD(padded);
+            const pad = String(n).padStart(2, "0");
+            if (pad !== dd) setDD(pad);
           }}
           disabled={disabled}
           aria-label="Dia"
@@ -108,7 +107,6 @@ export default function DateOfBirthField({
           ref={mmRef}
           type="text"
           inputMode="numeric"
-          pattern="\\d*"
           placeholder="MM"
           className="w-14 rounded-xl border px-3 py-2 text-base border-input bg-background"
           autoComplete="bday-month"
@@ -122,8 +120,8 @@ export default function DateOfBirthField({
           onBlur={() => {
             if (!mm) return;
             const n = Math.max(1, Math.min(parseInt(mm, 10) || 0, 12));
-            const padded = String(n).padStart(2, "0");
-            if (padded !== mm) setMM(padded);
+            const pad = String(n).padStart(2, "0");
+            if (pad !== mm) setMM(pad);
           }}
           disabled={disabled}
           aria-label="Mês"
@@ -133,7 +131,6 @@ export default function DateOfBirthField({
           ref={yyyyRef}
           type="text"
           inputMode="numeric"
-          pattern="\\d*"
           placeholder="AAAA"
           className="w-20 rounded-xl border px-3 py-2 text-base border-input bg-background"
           autoComplete="bday-year"
