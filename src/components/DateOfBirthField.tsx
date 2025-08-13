@@ -52,6 +52,9 @@ export default function DateOfBirthField({
   useEffect(() => { ddValRef.current = dd; }, [dd]);
   useEffect(() => { mmValRef.current = mm; }, [mm]);
 
+  const yyyyValRef = useRef(yyyy);
+  useEffect(() => { yyyyValRef.current = yyyy; }, [yyyy]);
+
   const ddRef = useRef<HTMLInputElement>(null);
   const mmRef = useRef<HTMLInputElement>(null);
   const yyyyRef = useRef<HTMLInputElement>(null);
@@ -269,11 +272,69 @@ export default function DateOfBirthField({
           placeholder="AAAA"
           className="w-20 rounded-xl border px-3 py-2 text-base border-input bg-background"
           autoComplete="bday-year"
-          maxLength={4}
           value={yyyy}
-          onChange={(e) => setYYYY(e.target.value.replace(/\D+/g, "").slice(0, 4))}
+          onFocus={(e) => {
+            requestAnimationFrame(() => {
+              try { e.currentTarget.setSelectionRange(0, e.currentTarget.value.length); } catch {}
+            });
+          }}
+          onBeforeInput={(e: React.FormEvent<HTMLInputElement> & { nativeEvent: InputEvent }) => {
+            const el = e.currentTarget;
+            const data = (e.nativeEvent && (e.nativeEvent as any).data) || "";
+            const isDigit = /^\d$/.test(data);
+            const hasSelection = el.selectionStart !== el.selectionEnd;
+            if (isDigit && yyyyValRef.current.length >= 4 && !hasSelection) {
+              e.preventDefault();
+              setYYYY(data);
+              requestAnimationFrame(() => {
+                try { el.setSelectionRange(1, 1); } catch {}
+              });
+            }
+          }}
+          onInput={(e) => {
+            const el = e.currentTarget as HTMLInputElement;
+            const ne: any = (e as any).nativeEvent;
+            const data: string = (ne && ne.data) || "";
+            const isDigit = /^\d$/.test(data);
+            const noSelection = el.selectionStart === el.selectionEnd;
+            const caretAtEnd = el.selectionStart === (el.value?.length ?? 0);
+            if (isDigit && yyyyValRef.current.length >= 4 && noSelection && caretAtEnd) {
+              setYYYY(data);
+              requestAnimationFrame(() => {
+                try { el.setSelectionRange(1, 1); } catch {}
+              });
+              return;
+            }
+          }}
           onKeyDown={(e) => {
+            // Desktop fallback: sobrescrever quando já tem 4 dígitos e não há seleção
+            if (/^\d$/.test(e.key)) {
+              const el = e.currentTarget as HTMLInputElement;
+              const hasSelection = el.selectionStart !== el.selectionEnd;
+              if (yyyyValRef.current.length >= 4 && !hasSelection) {
+                e.preventDefault();
+                setYYYY(e.key);
+                requestAnimationFrame(() => {
+                  try { el.setSelectionRange(1, 1); } catch {}
+                });
+                return;
+              }
+            }
+            // Navegação como já existia:
             if (e.key === "Backspace" && yyyy === "") { e.preventDefault(); mmRef.current?.focus(); }
+          }}
+          onChange={(e) => {
+            let raw = e.target.value.replace(/\D+/g, "");
+            const el = e.currentTarget;
+            if (raw.length > 4) {
+              const noSelection = el.selectionStart === el.selectionEnd;
+              const caretAtEnd = el.selectionStart === (el.value?.length ?? 0);
+              raw = (yyyyValRef.current.length >= 4 && noSelection && caretAtEnd)
+                ? raw.slice(-1)   // reinicia a partir do dígito mais recente
+                : raw.slice(-4);  // caso geral: mantém os 4 últimos
+            }
+            if (raw.length > 4) raw = raw.slice(-4);
+            setYYYY(raw);
           }}
           onBlur={() => {
             if (!yyyy) return;
