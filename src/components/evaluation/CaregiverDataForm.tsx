@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Caregiver, Child } from '@/types';
 import { toast } from '@/hooks/use-toast';
 import DateOfBirthField from "@/components/DateOfBirthField";
+import { validateBirthDate } from '@/utils/dateValidation';
 
 interface CaregiverDataFormProps {
   onNext: (caregiver: Caregiver, child: Child) => void;
@@ -51,13 +52,12 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
       return;
     }
 
-    // Validate date of birth is not in the future
-    const birthDate = new Date(childDateOfBirth);
-    const today = new Date();
-    if (birthDate > today) {
+    // Validate date of birth using Zod schema
+    const birthDateValidation = validateBirthDate(childDateOfBirth);
+    if (!birthDateValidation.isValid) {
       toast({
         title: "Erro",
-        description: "A data de nascimento não pode ser no futuro.",
+        description: birthDateValidation.error,
         variant: "destructive"
       });
       return;
