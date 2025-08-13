@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import TestDateOfBirth from "./pages/TestDateOfBirth";
 import DebugDateOfBirth from "./pages/DebugDateOfBirth";
+import DebugDOB from "./pages/debug/dob";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/test-date" element={<TestDateOfBirth />} />
           <Route path="/debug/dob" element={<DebugDateOfBirth />} />
+          <Route path="/debug/dob-events" element={<DebugDOB />} />
           <Route path="*" element={<Index />} />
         </Routes>
       </BrowserRouter>
