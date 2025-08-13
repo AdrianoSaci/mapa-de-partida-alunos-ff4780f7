@@ -43,12 +43,16 @@ export default function DateOfBirthField({
   const [dd, setDD] = useState(init.dd);
   const [mm, setMM] = useState(init.mm);
   const [yyyy, setYYYY] = useState(init.yyyy);
+  const [isTyping, setIsTyping] = useState(false);
 
   const ddRef = useRef<HTMLInputElement>(null);
   const mmRef = useRef<HTMLInputElement>(null);
   const yyyyRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    // Não formatar durante digitação ativa
+    if (isTyping) return;
+
     const _d = parseInt(dd || "0", 10);
     const _m = parseInt(mm || "0", 10);
     const _y = parseInt(yyyy || "0", 10);
@@ -70,7 +74,7 @@ export default function DateOfBirthField({
     } else {
       onChange?.(null);
     }
-  }, [dd, mm, yyyy, minYear, maxYear, onChange]);
+  }, [dd, mm, yyyy, minYear, maxYear, onChange, isTyping]);
 
   const onlyDigits = (s: string, maxLen: number) => s.replace(/\D+/g, "").slice(0, maxLen);
 
@@ -115,10 +119,14 @@ export default function DateOfBirthField({
             }
           }}
           onChange={(e) => {
+            setIsTyping(true);
             const v = e.target.value.replace(/\D+/g, "").slice(0, 2);
             setDD(v);
+            // Reset typing flag after a short delay
+            setTimeout(() => setIsTyping(false), 100);
           }}
           onBlur={() => {
+            setIsTyping(false);
             if (!dd) return;
             const n = Math.max(1, Math.min(parseInt(dd, 10) || 0, 31));
            const pad = String(n).padStart(2, "0");
@@ -159,10 +167,14 @@ export default function DateOfBirthField({
             }
           }}
           onChange={(e) => {
+            setIsTyping(true);
             const v = e.target.value.replace(/\D+/g, "").slice(0, 2);
             setMM(v);
+            // Reset typing flag after a short delay
+            setTimeout(() => setIsTyping(false), 100);
           }}
           onBlur={() => {
+            setIsTyping(false);
             if (!mm) return;
             const n = Math.max(1, Math.min(parseInt(mm, 10) || 0, 12));
             const pad = String(n).padStart(2, "0");
