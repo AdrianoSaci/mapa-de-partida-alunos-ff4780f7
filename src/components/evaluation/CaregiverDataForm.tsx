@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Caregiver, Child } from '@/types';
 import { toast } from '@/hooks/use-toast';
+import DateOfBirthField from "@/components/DateOfBirthField";
 
 interface CaregiverDataFormProps {
   onNext: (caregiver: Caregiver, child: Child) => void;
@@ -152,13 +153,13 @@ export const CaregiverDataForm: React.FC<CaregiverDataFormProps> = ({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="childDateOfBirth">Data de Nascimento *</Label>
-                  <Input
-                    id="childDateOfBirth"
-                    type="date"
-                    value={childDateOfBirth}
-                    onChange={(e) => setChildDateOfBirth(e.target.value)}
+                  <DateOfBirthField
+                    label="Data de nascimento"
                     required
+                    minYear={2000}
+                    maxYear={new Date().getFullYear()}
+                    value={childDateOfBirth}
+                    onChange={(iso) => setChildDateOfBirth(iso || '')}
                   />
                 </div>
               </div>
