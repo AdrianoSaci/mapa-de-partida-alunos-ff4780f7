@@ -105,6 +105,7 @@ export default function DateOfBirthField({
             const isDigit = /^\d$/.test(data);
             const hasSelection = el.selectionStart !== el.selectionEnd;
             if (isDigit && dd.length === 2 && !hasSelection) {
+              // Reinicia quando já está cheio e não há seleção
               e.preventDefault();
               setDD(data);
               requestAnimationFrame(() => {
@@ -112,25 +113,37 @@ export default function DateOfBirthField({
               });
             }
           }}
+          onInput={(e) => {
+            // Fallback para teclados/browsers que não disparam onBeforeInput
+            const el = e.currentTarget as HTMLInputElement;
+            const ne: any = (e as any).nativeEvent;
+            const data: string = (ne && ne.data) || "";
+            const isDigit = /^\d$/.test(data);
+            const noSelection = el.selectionStart === el.selectionEnd;
+            const caretAtEnd = el.selectionStart === (el.value?.length ?? 0);
+
+            if (isDigit && dd.length === 2 && noSelection && caretAtEnd) {
+              // Começa novo valor com o dígito atual
+              setDD(data);
+              requestAnimationFrame(() => {
+                try { el.setSelectionRange(1, 1); } catch {}
+              });
+              return;
+            }
+          }}
           onKeyDown={(e) => {
             if (e.key === "/" || e.key === ".") { e.preventDefault(); mmRef.current?.focus(); }
           }}
           onChange={(e) => {
+            // Sanitização e limite final
             const el = e.currentTarget;
             let raw = e.target.value.replace(/\D+/g, "");
-
             if (raw.length > 2) {
               const noSelection = el.selectionStart === el.selectionEnd;
               const caretAtEnd = el.selectionStart === (el.value?.length ?? 0);
-              if (dd.length === 2 && noSelection && caretAtEnd) {
-                raw = raw.slice(-1);
-              } else {
-                raw = raw.slice(-2);
-              }
+              raw = (dd.length === 2 && noSelection && caretAtEnd) ? raw.slice(-1) : raw.slice(-2);
             }
-
-            raw = raw.slice(0, 2);
-            setDD(raw);
+            setDD(raw.slice(0, 2));
           }}
           onBlur={() => {
             if (!dd) return;
@@ -168,26 +181,35 @@ export default function DateOfBirthField({
               });
             }
           }}
+          onInput={(e) => {
+            const el = e.currentTarget as HTMLInputElement;
+            const ne: any = (e as any).nativeEvent;
+            const data: string = (ne && ne.data) || "";
+            const isDigit = /^\d$/.test(data);
+            const noSelection = el.selectionStart === el.selectionEnd;
+            const caretAtEnd = el.selectionStart === (el.value?.length ?? 0);
+
+            if (isDigit && mm.length === 2 && noSelection && caretAtEnd) {
+              setMM(data);
+              requestAnimationFrame(() => {
+                try { el.setSelectionRange(1, 1); } catch {}
+              });
+              return;
+            }
+          }}
           onKeyDown={(e) => {
             if (e.key === "/" || e.key === ".") { e.preventDefault(); yyyyRef.current?.focus(); }
             if (e.key === "Backspace" && mm === "") { e.preventDefault(); ddRef.current?.focus(); }
           }}
           onChange={(e) => {
-            const el = e.currentTarget;
             let raw = e.target.value.replace(/\D+/g, "");
-
+            const el = e.currentTarget;
             if (raw.length > 2) {
               const noSelection = el.selectionStart === el.selectionEnd;
               const caretAtEnd = el.selectionStart === (el.value?.length ?? 0);
-              if (mm.length === 2 && noSelection && caretAtEnd) {
-                raw = raw.slice(-1);
-              } else {
-                raw = raw.slice(-2);
-              }
+              raw = (mm.length === 2 && noSelection && caretAtEnd) ? raw.slice(-1) : raw.slice(-2);
             }
-
-            raw = raw.slice(0, 2);
-            setMM(raw);
+            setMM(raw.slice(0, 2));
           }}
           onBlur={() => {
             if (!mm) return;
