@@ -96,27 +96,36 @@ export default function DateOfBirthField({
           maxLength={2}
           value={dd}
           onFocus={(e) => {
-            // Seleciona tudo ao focar (facilita sobrescrever no mobile/desktop)
             requestAnimationFrame(() => {
               try { e.currentTarget.setSelectionRange(0, e.currentTarget.value.length); } catch {}
             });
           }}
+          onBeforeInput={(e: React.FormEvent<HTMLInputElement> & { nativeEvent: InputEvent }) => {
+            // Sobrescrever inteligente: se já tem 2 dígitos e não há seleção, iniciar novo valor com o dígito inserido
+            const el = e.currentTarget;
+            const data = (e.nativeEvent && (e.nativeEvent as any).data) || "";
+            const isDigit = /^\d$/.test(data);
+            const hasSelection = el.selectionStart !== el.selectionEnd;
+            if (isDigit && dd.length === 2 && !hasSelection) {
+              e.preventDefault(); // impede inserir um 3º char
+              setDD(data);        // começa novo par com o dígito atual
+              requestAnimationFrame(() => {
+                try { el.setSelectionRange(1, 1); } catch {}
+              });
+            }
+          }}
           onKeyDown={(e) => {
-            // atalhos
-            if (e.key === "/" || e.key === ".") { e.preventDefault(); mmRef.current?.focus(); return; }
+            // atalhos de navegação
+            if (e.key === "/" || e.key === ".") { e.preventDefault(); mmRef.current?.focus(); }
           }}
           onChange={(e) => {
-            setIsTyping(true);
             const v = e.target.value.replace(/\D+/g, "").slice(0, 2);
             setDD(v);
-            // Reset typing flag after a short delay
-            setTimeout(() => setIsTyping(false), 100);
           }}
           onBlur={() => {
-            setIsTyping(false);
             if (!dd) return;
             const n = Math.max(1, Math.min(parseInt(dd, 10) || 0, 31));
-           const pad = String(n).padStart(2, "0");
+            const pad = String(n).padStart(2, "0");
             if (pad !== dd) setDD(pad);
           }}
           disabled={disabled}
@@ -137,19 +146,28 @@ export default function DateOfBirthField({
               try { e.currentTarget.setSelectionRange(0, e.currentTarget.value.length); } catch {}
             });
           }}
+          onBeforeInput={(e: React.FormEvent<HTMLInputElement> & { nativeEvent: InputEvent }) => {
+            const el = e.currentTarget;
+            const data = (e.nativeEvent && (e.nativeEvent as any).data) || "";
+            const isDigit = /^\d$/.test(data);
+            const hasSelection = el.selectionStart !== el.selectionEnd;
+            if (isDigit && mm.length === 2 && !hasSelection) {
+              e.preventDefault();
+              setMM(data);
+              requestAnimationFrame(() => {
+                try { el.setSelectionRange(1, 1); } catch {}
+              });
+            }
+          }}
           onKeyDown={(e) => {
-            if (e.key === "/" || e.key === ".") { e.preventDefault(); yyyyRef.current?.focus(); return; }
-            if (e.key === "Backspace" && mm === "") { e.preventDefault(); ddRef.current?.focus(); return; }
+            if (e.key === "/" || e.key === ".") { e.preventDefault(); yyyyRef.current?.focus(); }
+            if (e.key === "Backspace" && mm === "") { e.preventDefault(); ddRef.current?.focus(); }
           }}
           onChange={(e) => {
-            setIsTyping(true);
             const v = e.target.value.replace(/\D+/g, "").slice(0, 2);
             setMM(v);
-            // Reset typing flag after a short delay
-            setTimeout(() => setIsTyping(false), 100);
           }}
           onBlur={() => {
-            setIsTyping(false);
             if (!mm) return;
             const n = Math.max(1, Math.min(parseInt(mm, 10) || 0, 12));
             const pad = String(n).padStart(2, "0");
