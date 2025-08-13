@@ -104,21 +104,6 @@ export default function DateOfBirthField({
           onKeyDown={(e) => {
             // atalhos
             if (e.key === "/" || e.key === ".") { e.preventDefault(); mmRef.current?.focus(); return; }
-            // sobrescrever inteligente: apenas no desktop quando não está digitando
-            if (!isMobile && /^\d$/.test(e.key) && !isTyping) {
-              const el = e.currentTarget;
-              const hasSelection = el.selectionStart !== el.selectionEnd;
-              if (dd.length === 2 && !hasSelection) {
-                e.preventDefault();
-                setIsTyping(true);
-                setDD(e.key);
-                requestAnimationFrame(() => {
-                  try { el.setSelectionRange(1, 1); } catch {}
-                });
-                setTimeout(() => setIsTyping(false), 100);
-                return;
-              }
-            }
           }}
           onChange={(e) => {
             setIsTyping(true);
@@ -155,21 +140,6 @@ export default function DateOfBirthField({
           onKeyDown={(e) => {
             if (e.key === "/" || e.key === ".") { e.preventDefault(); yyyyRef.current?.focus(); return; }
             if (e.key === "Backspace" && mm === "") { e.preventDefault(); ddRef.current?.focus(); return; }
-            // sobrescrever inteligente: apenas no desktop quando não está digitando
-            if (!isMobile && /^\d$/.test(e.key) && !isTyping) {
-              const el = e.currentTarget;
-              const hasSelection = el.selectionStart !== el.selectionEnd;
-              if (mm.length === 2 && !hasSelection) {
-                e.preventDefault();
-                setIsTyping(true);
-                setMM(e.key);
-                requestAnimationFrame(() => {
-                  try { el.setSelectionRange(1, 1); } catch {}
-                });
-                setTimeout(() => setIsTyping(false), 100);
-                return;
-              }
-            }
           }}
           onChange={(e) => {
             setIsTyping(true);
