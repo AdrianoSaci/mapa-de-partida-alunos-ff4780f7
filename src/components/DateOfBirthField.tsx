@@ -89,14 +89,39 @@ export default function DateOfBirthField({
           autoComplete="bday-day"
           maxLength={2}
           value={dd}
-          onChange={(e) => setDD(e.target.value.replace(/\D+/g, "").slice(0, 2))}
+          onFocus={(e) => {
+            // Seleciona tudo ao focar (facilita sobrescrever no mobile/desktop)
+            requestAnimationFrame(() => {
+              try { e.currentTarget.setSelectionRange(0, e.currentTarget.value.length); } catch {}
+            });
+          }}
           onKeyDown={(e) => {
-            if (e.key === "/" || e.key === ".") { e.preventDefault(); mmRef.current?.focus(); }
+            // atalhos
+           if (e.key === "/" || e.key === ".") { e.preventDefault(); mmRef.current?.focus(); return; }
+            // sobrescrever inteligente: se já tem 2 dígitos e não há seleção, comece novo valor
+            if (/^\d$/.test(e.key)) {
+              const el = e.currentTarget;
+              const hasSelection = el.selectionStart !== el.selectionEnd;
+              if (dd.length === 2 && !hasSelection) {
+                e.preventDefault();
+                // começa novo par com o dígito pressionado
+                setDD(e.key);
+                // posiciona o cursor ao final
+                requestAnimationFrame(() => {
+                  try { el.setSelectionRange(1, 1); } catch {}
+                });
+                return;
+              }
+            }
+          }}
+          onChange={(e) => {
+            const v = e.target.value.replace(/\D+/g, "").slice(0, 2);
+            setDD(v);
           }}
           onBlur={() => {
             if (!dd) return;
             const n = Math.max(1, Math.min(parseInt(dd, 10) || 0, 31));
-            const pad = String(n).padStart(2, "0");
+           const pad = String(n).padStart(2, "0");
             if (pad !== dd) setDD(pad);
           }}
           disabled={disabled}
@@ -112,10 +137,30 @@ export default function DateOfBirthField({
           autoComplete="bday-month"
           maxLength={2}
           value={mm}
-          onChange={(e) => setMM(e.target.value.replace(/\D+/g, "").slice(0, 2))}
+          onFocus={(e) => {
+            requestAnimationFrame(() => {
+              try { e.currentTarget.setSelectionRange(0, e.currentTarget.value.length); } catch {}
+            });
+          }}
           onKeyDown={(e) => {
-            if (e.key === "/" || e.key === ".") { e.preventDefault(); yyyyRef.current?.focus(); }
-            if (e.key === "Backspace" && mm === "") { e.preventDefault(); ddRef.current?.focus(); }
+            if (e.key === "/" || e.key === ".") { e.preventDefault(); yyyyRef.current?.focus(); return; }
+            if (e.key === "Backspace" && mm === "") { e.preventDefault(); ddRef.current?.focus(); return; }
+            if (/^\d$/.test(e.key)) {
+              const el = e.currentTarget;
+              const hasSelection = el.selectionStart !== el.selectionEnd;
+              if (mm.length === 2 && !hasSelection) {
+                e.preventDefault();
+                setMM(e.key);
+                requestAnimationFrame(() => {
+                  try { el.setSelectionRange(1, 1); } catch {}
+                });
+                return;
+              }
+            }
+          }}
+          onChange={(e) => {
+            const v = e.target.value.replace(/\D+/g, "").slice(0, 2);
+            setMM(v);
           }}
           onBlur={() => {
             if (!mm) return;
