@@ -52,6 +52,14 @@ export const InstructionsPage: React.FC<InstructionsPageProps> = ({
                   <p className="text-gray-600">A avaliação leva aproximadamente 10-15 minutos. Reserve um tempo tranquilo para preenchê-la com cuidado, pois é muito importante que as informações reflitam a realidade da sua criança. O resultado do teste está diretamente relacionado à veracidade das informações.</p>
                 </div>
               </div>
+
+              <div className="flex items-start gap-3">
+                <CheckCircle className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-800">Como baixar o resultado</h3>
+                  <p className="text-gray-600">Após ter preenchido e confirmado as informações preenchidas, você será direcionado para a página com o resultado desta avaliação. Ao final desta página clique no botão <strong>"Baixar Resultado"</strong> para fazer o download do relatório para o seu dispositivo.</p>
+                </div>
+              </div>
             </div>
 
             <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
